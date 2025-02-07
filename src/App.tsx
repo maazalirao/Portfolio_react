@@ -358,7 +358,7 @@ function App() {
                       <div className="absolute -left-[29px] top-1 w-4 h-4 rounded-full bg-emerald-400"></div>
                       <div className="flex items-center justify-between mb-2">
                         <h4 className="text-xl font-semibold">Pre-Engineering</h4>
-                        <span className="text-emerald-400"> Grade</span>
+                        <span className="text-emerald-400"></span>
                       </div>
                       <p className="text-gray-400">KIPS College Multan, 2021</p>
                     </div>
