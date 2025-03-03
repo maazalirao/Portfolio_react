@@ -1,48 +1,47 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { resolve } from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react({
-    // Babel configuration for faster builds
-    babel: {
-      babelrc: false,
-      configFile: false,
-      plugins: []
+  plugins: [react()],
+  // Add base path for Vercel deployment
+  base: '/',
+  // Configure resolve for better path handling
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, 'src')
     }
-  })],
+  },
   build: {
-    // Enable minification and tree-shaking
+    // Enable minification 
     minify: 'esbuild',
     cssMinify: true,
-    // Disable chunk size warnings 
-    chunkSizeWarningLimit: 2000,
-    // Disable sourcemaps for production build to speed up build time
+    // Set conservative targets for broader compatibility
+    target: 'es2015',
+    // Disable sourcemaps for production build
     sourcemap: false,
     // Empty outDir before building
     emptyOutDir: true,
-    // Use faster esbuild for transformations
-    cssTarget: 'esnext',
-    target: 'esnext'
+    // Ensure correct output directory for Vercel
+    outDir: 'dist',
+    // Set reasonable chunk size
+    chunkSizeWarningLimit: 1000
   },
-  // Configure optimizeDeps for faster builds
+  // Configure optimizeDeps
   optimizeDeps: {
-    esbuildOptions: {
-      target: 'esnext'
-    }
+    include: [
+      'react',
+      'react-dom',
+      '@react-three/fiber',
+      '@react-three/drei',
+      'lucide-react'
+    ]
   },
-  // Reduce dev server refresh latency
+  // Vercel compatible server config
   server: {
-    hmr: {
-      overlay: false
-    }
-  },
-  // Use esbuild to transpile TypeScript
-  esbuild: {
-    tsconfigRaw: {
-      compilerOptions: {
-        target: 'esnext'
-      }
-    }
+    port: 3000,
+    host: true,
+    strictPort: true
   }
 });
