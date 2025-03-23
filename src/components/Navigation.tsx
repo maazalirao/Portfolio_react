@@ -135,62 +135,78 @@ function Navigation({ activeSection, isScrolling }: { activeSection: string, isS
 
       {/* Mobile menu drawer */}
       <div
-        className={`fixed inset-0 z-50 bg-background/95 backdrop-blur-md transition-transform duration-300 md:hidden ${
-          isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+        className={`fixed inset-0 z-50 transition-all duration-300 md:hidden ${
+          isMobileMenuOpen ? 'visible opacity-100' : 'invisible opacity-0'
         }`}
+        aria-hidden={!isMobileMenuOpen}
       >
-        <div className="flex flex-col h-full p-6">
-          <div className="flex justify-between items-center mb-8">
-            <a href="#home" className="text-2xl font-bold text-white">
-              <span className="text-primary">M</span>aaz.
-            </a>
-            <button
-              className="text-white p-2 focus:outline-none"
-              onClick={toggleMobileMenu}
-              aria-label="Close menu"
-            >
-              <X size={24} />
-            </button>
-          </div>
-          
-          <div className="flex flex-col space-y-2">
-            {navItems.map((item) => (
-              <NavLink
-                key={item.href}
-                href={item.href}
-                label={item.label}
-                icon={item.icon}
-                isActive={activeSection === item.href.substring(1)}
-                onClick={closeMobileMenu}
-                isMobile={true}
-              />
-            ))}
-          </div>
-          
-          <div className="mt-auto pt-6">
-            <div className="grid grid-cols-3 gap-4">
-              <a
-                href="mailto:maazaltaf1027@gmail.com"
-                className="flex items-center justify-center p-3 rounded-full bg-gray-800/50 text-primary hover:bg-gray-700/50 transition-colors"
-              >
-                <Mail size={20} />
+        {/* Backdrop overlay */}
+        <div 
+          className={`absolute inset-0 bg-black/70 backdrop-blur-sm transition-opacity duration-300 ${
+            isMobileMenuOpen ? 'opacity-100' : 'opacity-0'
+          }`}
+          onClick={closeMobileMenu}
+        ></div>
+        
+        {/* Menu content */}
+        <div 
+          className={`absolute right-0 top-0 h-full w-[270px] bg-background/95 backdrop-blur-md z-10 shadow-2xl transform transition-transform duration-300 ${
+            isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+          }`}
+        >
+          <div className="flex flex-col h-full p-6">
+            <div className="flex justify-between items-center mb-8">
+              <a href="#home" className="text-2xl font-bold text-white">
+                <span className="text-primary">M</span>aaz.
               </a>
-              <a
-                href="https://github.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center p-3 rounded-full bg-gray-800/50 text-primary hover:bg-gray-700/50 transition-colors"
+              <button
+                className="text-white p-2 focus:outline-none"
+                onClick={toggleMobileMenu}
+                aria-label="Close menu"
               >
-                <Github size={20} />
-              </a>
-              <a
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center p-3 rounded-full bg-gray-800/50 text-primary hover:bg-gray-700/50 transition-colors"
-              >
-                <Linkedin size={20} />
-              </a>
+                <X size={24} />
+              </button>
+            </div>
+            
+            <div className="flex flex-col space-y-2">
+              {navItems.map((item) => (
+                <NavLink
+                  key={item.href}
+                  href={item.href}
+                  label={item.label}
+                  icon={item.icon}
+                  isActive={activeSection === item.href.substring(1)}
+                  onClick={closeMobileMenu}
+                  isMobile={true}
+                />
+              ))}
+            </div>
+            
+            <div className="mt-auto pt-6">
+              <div className="grid grid-cols-3 gap-4">
+                <a
+                  href="mailto:maazaltaf1027@gmail.com"
+                  className="flex items-center justify-center p-3 rounded-full bg-gray-800/50 text-primary hover:bg-gray-700/50 transition-colors"
+                >
+                  <Mail size={20} />
+                </a>
+                <a
+                  href="https://github.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center p-3 rounded-full bg-gray-800/50 text-primary hover:bg-gray-700/50 transition-colors"
+                >
+                  <Github size={20} />
+                </a>
+                <a
+                  href="https://linkedin.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center p-3 rounded-full bg-gray-800/50 text-primary hover:bg-gray-700/50 transition-colors"
+                >
+                  <Linkedin size={20} />
+                </a>
+              </div>
             </div>
           </div>
         </div>
