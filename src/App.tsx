@@ -168,6 +168,15 @@ function App() {
       color: "from-teal-400 to-emerald-500"
     },
     {
+      title: "Interactive Storytelling",
+      description: "A dynamic storytelling platform where users can create and experience interactive narratives",
+      tech: ["MongoDB", "Express", "React", "Node.js"],
+      link: "https://maazstory.vercel.app",
+      githubLink: "https://github.com/yourusername/interactive-story",
+      image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1964&auto=format&fit=crop",
+      color: "from-indigo-400 to-purple-500"
+    },
+    {
       title: "TikTak NYC",
       description: "A modern rickshaw service platform built with Next.js and Node.js",
       tech: ["React", "Node.js", "MongoDB"],
