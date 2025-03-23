@@ -1,5 +1,5 @@
-import React, { useState, useCallback, memo, useEffect } from 'react';
-import { Globe, Github, ExternalLink, Code } from 'lucide-react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { Code, ExternalLink, Github } from 'lucide-react';
 
 interface ProjectCardProps {
   title: string;
@@ -12,22 +12,23 @@ interface ProjectCardProps {
   index: number;
 }
 
-const ProjectCard: React.FC<ProjectCardProps> = memo(({
-  title,
-  description,
-  tech,
-  link,
-  githubLink,
-  image,
+const ProjectCard: React.FC<ProjectCardProps> = ({ 
+  title, 
+  description, 
+  tech, 
+  link, 
+  githubLink, 
+  image, 
   color,
-  index,
+  index 
 }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
   const [isTouched, setIsTouched] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
 
-  // Check if device is mobile
+  // Detect mobile devices for better touch interactions
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -35,160 +36,148 @@ const ProjectCard: React.FC<ProjectCardProps> = memo(({
     
     checkMobile();
     window.addEventListener('resize', checkMobile);
+    
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Memoize event handlers to prevent recreating on each render
-  const handleMouseEnter = useCallback(() => {
-    if (!isMobile) {
-      setIsHovered(true);
-    }
-  }, [isMobile]);
-
-  const handleMouseLeave = useCallback(() => {
-    if (!isMobile) {
-      setIsHovered(false);
-    }
-  }, [isMobile]);
-  
-  const handleTouchStart = useCallback(() => {
-    if (isMobile) {
-      setIsTouched(prev => !prev);
-    }
-  }, [isMobile]);
-
-  const handleImageLoad = useCallback(() => {
-    setImageLoaded(true);
+  // Reset touch state when user navigates away
+  useEffect(() => {
+    return () => setIsTouched(false);
   }, []);
 
-  // Memoize tech items to prevent recreation on render
-  const techItems = React.useMemo(() => tech.map((item, i) => (
-    <span 
-      key={i} 
-      className="cyber-tag text-xs md:text-sm py-1 px-2 md:px-3 whitespace-nowrap"
-    >
-      {item}
-    </span>
-  )), [tech]);
+  // Mouse event handlers (for desktop)
+  const handleMouseEnter = () => {
+    if (!isMobile) setIsHovered(true);
+  };
+  
+  const handleMouseLeave = () => {
+    if (!isMobile) setIsHovered(false);
+  };
 
-  // Determine if we should show overlay (hover on desktop, touch on mobile)
-  const showOverlay = (isMobile && isTouched) || (!isMobile && isHovered);
+  // Touch event handlers (for mobile)
+  const handleTouchStart = () => {
+    if (isMobile) setIsTouched(true);
+  };
+  
+  const handleTouchEnd = () => {
+    // On mobile, keep overlay visible until user taps elsewhere
+    // This is handled by the document click listener below
+  };
+
+  // Memoize tech items to avoid recreating on each render
+  const techItems = useMemo(() => 
+    tech.map((item, i) => (
+      <span 
+        key={i} 
+        className="bg-background/30 backdrop-blur-sm px-3 py-1 rounded-full text-sm text-white whitespace-nowrap"
+      >
+        {item}
+      </span>
+    )), 
+    [tech]
+  );
+
+  // Determine when to show overlay (mobile vs desktop)
+  const showOverlay = isMobile ? isTouched : isHovered;
+
+  // Handle image loading state
+  const handleImageLoad = () => {
+    setIsImageLoaded(true);
+  };
 
   return (
     <div 
-      className="project-card group"
-      style={{ animationDelay: `${0.2 * (index + 1)}s` }}
+      ref={cardRef}
+      className={`relative w-full overflow-hidden rounded-2xl card animate-fade-in opacity-0 transform h-[340px] shadow-xl transition-transform ${
+        showOverlay ? 'scale-[1.02]' : ''
+      }`}
+      style={{ animationDelay: `${index * 0.1 + 0.2}s` }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      onClick={handleTouchStart}
       onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
-      <div className="relative overflow-hidden rounded-t-lg">
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-black/60 z-10"></div>
-        
-        {/* Glitch Effect on Hover */}
-        <div className={`absolute inset-0 bg-gradient-to-br ${color} opacity-20 transition-opacity ${showOverlay ? 'opacity-40' : 'opacity-20'}`}></div>
-        
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-500 to-transparent"></div>
-        <div className="absolute top-0 right-0 w-1 h-full bg-gradient-to-b from-cyan-500 via-transparent to-transparent"></div>
-        
-        {/* Add loading placeholder with simplified design */}
-        <div className={`absolute inset-0 bg-gray-800 flex items-center justify-center transition-opacity duration-300 ${imageLoaded ? 'opacity-0' : 'opacity-100'}`}>
-          <div className="w-8 h-8 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+      {/* Loading indicator when image not loaded */}
+      {!isImageLoaded && (
+        <div className="absolute inset-0 flex items-center justify-center bg-background/90">
+          <div className="w-8 h-8 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
         </div>
+      )}
+
+      {/* Project image with blur-up loading technique */}
+      <img 
+        src={image} 
+        alt={title} 
+        className={`absolute inset-0 w-full h-full object-cover transition-all duration-300 ${
+          isImageLoaded ? 'opacity-100' : 'opacity-0'
+        }`}
+        onLoad={handleImageLoad}
+        loading="lazy"
+        width="400"
+        height="300"
+      />
+      
+      {/* Gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/90 to-black/20"></div>
+      
+      {/* Bottom content (always visible) */}
+      <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
+        <h3 className="text-xl font-bold text-white">{title}</h3>
         
-        <img 
-          src={image} 
-          alt={title}
-          className={`w-full h-48 object-cover transform transition-all duration-700 ${showOverlay ? 'scale-110 blur-xs' : 'scale-100'}`}
-          loading="lazy" 
-          onLoad={handleImageLoad}
-          decoding="async" // Use async decoding
-        />
-        
-        {/* Cyber Frame - Simplified for mobile */}
-        {!isMobile && (
-          <>
-            <div className="absolute top-2 left-2 w-3 h-3 border-t border-l border-cyan-500"></div>
-            <div className="absolute top-2 right-2 w-3 h-3 border-t border-r border-cyan-500"></div>
-            <div className="absolute bottom-2 left-2 w-3 h-3 border-b border-l border-cyan-500"></div>
-            <div className="absolute bottom-2 right-2 w-3 h-3 border-b border-r border-cyan-500"></div>
-          </>
-        )}
-        
-        {/* Hover/Touch Overlay */}
-        <div className={`absolute inset-0 bg-black/80 z-20 flex items-center justify-center gap-6 transition-opacity duration-300 ${
-          showOverlay ? 'opacity-100' : 'opacity-0 pointer-events-none'
-        }`}>
-          {showOverlay && (
-            <>
-              <a 
-                href={link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="cyber-btn-icon p-3 rounded-md hover:scale-110 active:scale-95 transition-transform touch-manipulation"
-                aria-label="View Live Demo"
-              >
-                <ExternalLink size={isMobile ? 18 : 20} className="text-white" />
-              </a>
-              {githubLink && (
-                <a 
-                  href={githubLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="cyber-btn-icon p-3 rounded-md hover:scale-110 active:scale-95 transition-transform touch-manipulation"
-                  aria-label="View Source Code"
-                >
-                  <Github size={isMobile ? 18 : 20} className="text-white" />
-                </a>
-              )}
-            </>
-          )}
-        </div>
-        
-        {/* Mobile tap instruction */}
+        {/* Mobile instruction indicator */}
         {isMobile && !isTouched && (
-          <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs py-1 px-2 rounded z-20 animate-pulse">
-            Tap to view actions
+          <div className="absolute top-3 right-3 bg-gray-900/80 backdrop-blur-sm text-white text-xs py-1 px-2 rounded-md flex items-center">
+            <span className="mr-1">Tap</span>
+            <span className="relative flex h-2 w-2 mr-1">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+            </span>
           </div>
         )}
       </div>
       
-      <div className="p-4 md:p-6 relative bg-gradient-to-b from-background-dark to-background-dark/70 backdrop-blur-sm">
-        <h3 className="text-lg md:text-xl font-bold mb-2 group-hover:text-cyan-400 transition-colors flex items-center">
-          <Code size={isMobile ? 14 : 16} className="mr-2 text-cyan-500" />
-          {title}
-        </h3>
-        <p className="text-sm md:text-base text-gray-400 mb-3 md:mb-4 line-clamp-2">{description}</p>
-        <div className="flex flex-wrap gap-1.5 md:gap-2 mb-3 md:mb-4">
-          {techItems}
+      {/* Overlay content (visible on hover/touch) */}
+      <div 
+        className={`absolute inset-0 z-20 flex flex-col justify-between p-6 bg-gradient-to-t ${color} bg-opacity-80 backdrop-blur-sm transition-opacity duration-300 ${
+          showOverlay ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
+      >
+        <div>
+          <h3 className="text-xl md:text-2xl font-bold text-white mb-2">{title}</h3>
+          <p className="text-gray-100 mb-4 text-sm md:text-base">{description}</p>
         </div>
-        <div className="flex items-center gap-3 md:gap-4 text-sm md:text-base">
-          <a 
-            href={link} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="inline-flex items-center text-cyan-400 hover:text-cyan-300 transition-colors group touch-manipulation"
-          >
-            Live Demo <Globe size={isMobile ? 14 : 16} className="ml-1 md:ml-2 group-hover:rotate-12 transition-transform" />
-          </a>
-          {githubLink && (
+        
+        <div>
+          <div className="flex flex-wrap gap-2 mb-6">
+            {techItems}
+          </div>
+          
+          <div className="flex items-center space-x-3">
             <a 
-              href={githubLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center text-gray-400 hover:text-white transition-colors group touch-manipulation"
+              href={link} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="bg-white/20 backdrop-blur-lg text-white px-4 py-2 rounded-lg flex items-center hover:bg-white/30 transition-colors"
             >
-              Source <Github size={isMobile ? 14 : 16} className="ml-1 md:ml-2 group-hover:rotate-12 transition-transform" />
+              <ExternalLink size={16} className="mr-2" />
+              <span>View Project</span>
             </a>
-          )}
+            
+            {githubLink && (
+              <a 
+                href={githubLink} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="bg-white/20 backdrop-blur-lg text-white p-2 rounded-lg flex items-center hover:bg-white/30 transition-colors"
+              >
+                <Github size={18} />
+              </a>
+            )}
+          </div>
         </div>
       </div>
     </div>
   );
-});
-
-// Important for memo to work correctly
-ProjectCard.displayName = 'ProjectCard';
+};
 
 export default ProjectCard;

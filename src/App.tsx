@@ -6,6 +6,9 @@ const ProjectCard = lazy(() => import('./components/ProjectCard'));
 const HeroSection = lazy(() => import('./components/HeroSection'));
 const TerminalIntro = lazy(() => import('./components/TerminalIntro'));
 
+// Import pesticides project image
+import pesticidesImage from './assets/image.png';
+
 // Extend Window interface to include our custom property
 declare global {
   interface Window {
@@ -155,6 +158,15 @@ function App() {
 
   // Memoize projects array to prevent recreation on each render
   const projects = React.useMemo(() => [
+    {
+      title: "Pesticides Inventory Management System",
+      description: "A comprehensive inventory system for tracking pesticides with real-time stock monitoring",
+      tech: ["React", "Node.js", "MongoDB", "Express"],
+      link: "https://fyp40.vercel.app",
+      githubLink: "https://github.com/yourusername/pesticides-inventory",
+      image: pesticidesImage,
+      color: "from-teal-400 to-emerald-500"
+    },
     {
       title: "TikTak NYC",
       description: "A modern rickshaw service platform built with Next.js and Node.js",
