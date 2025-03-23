@@ -80,20 +80,47 @@ body {
   }
 }
 
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes cursor-blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
 /* Use will-change only where absolutely necessary to improve rendering performance */
 .animate-fade-in-up {
   animation: fadeInUp 0.5s ease forwards;
   will-change: transform, opacity;
+  animation-duration: 0.4s;
 }
 
 .animate-scale-in {
   animation: scaleIn 0.5s ease forwards;
   will-change: transform, opacity;
+  animation-duration: 0.4s;
 }
 
 .animate-slide-in {
   animation: slideInRight 0.5s ease forwards;
   will-change: transform, opacity;
+  animation-duration: 0.4s;
+}
+
+/* Force hardware acceleration where needed */
+.animate-scale-in,
+.animate-slide-in,
+.transition-transform,
+.terminal-cursor {
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 /* Optimized glass effect */
@@ -162,11 +189,12 @@ body {
 }
 
 .skill-bar {
-  height: 0.5rem;
+  display: block;
+  height: 4px;
   background: linear-gradient(to right, #60a5fa, #34d399);
-  border-radius: 9999px;
+  border-radius: 999px;
   width: 0;
-  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width 1s ease-out;
 }
 
 .project-card {
@@ -197,14 +225,14 @@ body {
   height: 24px;
 }
 
-/* Remove custom scrollbar which can cause lag */
+/* Smooth scrolling for desktop */
 html {
   scroll-behavior: smooth;
 }
 
-/* Add minimal styling only for scrollbar to maintain performance */
+/* Basic scrollbar styling with better performance */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -214,75 +242,6 @@ html {
 ::-webkit-scrollbar-thumb {
   background: rgba(96, 165, 250, 0.3);
   border-radius: 10px;
-}
-
-/* Optimize mobile experience by disabling certain effects on smaller screens */
-@media (max-width: 768px) {
-  * {
-    transition-duration: 0ms !important; /* Disable transitions on mobile */
-  }
-  
-  .animate-fade-in-up,
-  .animate-scale-in,
-  .animate-slide-in {
-    animation: none !important;
-    opacity: 1 !important;
-    transform: none !important;
-  }
-  
-  /* Reduce animation complexity on mobile */
-  .animate-float {
-    animation-duration: 3s;
-  }
-  
-  /* Optimize performance by reducing motion for users who prefer it */
-  @media (prefers-reduced-motion) {
-    .animate-float,
-    .animate-pulse-slow,
-    .animate-pulse-slower,
-    .animate-bounce-slow,
-    .animate-spin-slow {
-      animation: none !important;
-    }
-    
-    .animate-fade-in-up {
-      opacity: 1 !important;
-      transform: translateY(0) !important;
-      animation: none !important;
-    }
-  }
-  
-  /* Improve touch targets for mobile */
-  button, 
-  a {
-    min-height: 44px;
-    min-width: 44px;
-  }
-  
-  /* Better scrolling experience */
-  html, body {
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-  }
-  
-  /* Prevent text size adjustment after orientation changes */
-  html {
-    -webkit-text-size-adjust: 100%;
-  }
-  
-  /* Custom scrollbar for mobile */
-  ::-webkit-scrollbar {
-    width: 4px;
-  }
-  
-  ::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.1);
-  }
-  
-  ::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 4px;
-  }
 }
 
 /* Reduce the number of shadow layers to improve performance */
@@ -302,16 +261,7 @@ html {
   color: transparent;
 }
 
-/* Custom animation for terminal cursor */
-@keyframes cursor-blink {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0;
-  }
-}
-
+/* Terminal cursor blinking */
 .terminal-cursor {
   animation: cursor-blink 1.2s infinite;
 }
@@ -326,21 +276,120 @@ html {
   animation: spin 1s ease-in-out infinite;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
+/* ========== MOBILE OPTIMIZATION ========== */
+@media (max-width: 768px) {
+  /* Better mobile typography */
+  h1 {
+    font-size: 2.25rem !important;
+    line-height: 1.2 !important;
+  }
+  
+  h2 {
+    font-size: 1.75rem !important;
+    line-height: 1.25 !important;
+  }
+  
+  h3 {
+    font-size: 1.5rem !important;
+    line-height: 1.3 !important;
+  }
+  
+  p, li {
+    font-size: 0.95rem !important;
+    line-height: 1.6 !important;
+  }
+  
+  /* Improved card styling for mobile */
+  .card {
+    padding: 1.25rem !important;
+    margin-bottom: 1.5rem !important;
+    border-radius: 0.75rem !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  /* Restyle buttons for touch */
+  button, a.cyber-btn, a[href^="#"] {
+    min-height: 44px !important;
+    min-width: 44px !important;
+    padding: 0.625rem 1rem !important;
+    font-size: 0.9rem !important;
+    border-radius: 0.5rem !important;
+  }
+  
+  /* Simplify animations for better performance */
+  * {
+    transition-duration: 0.15s !important;
+  }
+  
+  .animate-fade-in-up,
+  .animate-scale-in,
+  .animate-slide-in {
+    animation-duration: 0.3s !important;
+  }
+  
+  /* Better spacing */
+  section {
+    padding: 3rem 1rem !important;
+  }
+  
+  .container {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  
+  /* Improve grid layouts */
+  .grid {
+    gap: 1rem !important;
+  }
+  
+  /* Enhanced mobile navigation */
+  nav {
+    backdrop-filter: blur(10px) !important;
+    background-color: rgba(15, 23, 42, 0.85) !important;
+  }
+  
+  /* Make contact buttons easier to press */
+  .contact-link {
+    padding: 0.875rem !important;
+    margin-bottom: 0.75rem !important;
+    border-radius: 0.625rem !important;
+    background-color: rgba(255, 255, 255, 0.03) !important;
+  }
+  
+  /* Thinner scrollbar for mobile */
+  ::-webkit-scrollbar {
+    width: 4px !important;
+  }
+  
+  /* Better fixed positioning for theme toggle */
+  .fixed.bottom-6.right-6 {
+    bottom: 1rem !important;
+    right: 1rem !important;
+  }
+  
+  /* Mobile-specific hero layout */
+  #home .flex-col.lg\:flex-row {
+    gap: 2rem !important;
+  }
+  
+  /* Remove the stats grid on mobile */
+  #home .grid-cols-2.sm\:grid-cols-4 {
+    gap: 0.5rem !important;
+  }
+  
+  /* Improve skill bars for mobile view */
+  .skill-item {
+    margin-bottom: 1rem !important;
+  }
+  
+  /* Enhanced project cards */
+  .project-card {
+    transform: scale(1) !important;
+    opacity: 1 !important;
   }
 }
 
-/* Optimize animations */
-.animate-scale-in {
-  animation-duration: 0.4s;
-}
-
-.animate-slide-in {
-  animation-duration: 0.4s;
-}
-
+/* Reduced motion preferences */
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;
@@ -348,22 +397,15 @@ html {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-}
-
-/* Defer non-critical CSS */
-.skill-bar {
-  display: block;
-  height: 4px;
-  background: linear-gradient(to right, #60a5fa, #34d399);
-  border-radius: 999px;
-  transition: width 1s ease-out;
-}
-
-/* Force hardware acceleration where needed */
-.animate-scale-in,
-.animate-slide-in,
-.transition-transform,
-.terminal-cursor {
-  transform: translateZ(0);
-  will-change: transform;
+  
+  .animate-fade-in-up,
+  .animate-scale-in,
+  .animate-slide-in,
+  .animate-float,
+  .animate-pulse,
+  .animate-bounce {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
