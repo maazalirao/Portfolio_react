@@ -418,11 +418,25 @@ function App() {
         <div className="container mx-auto px-6 relative">
           <h2 className="text-4xl font-bold text-gradient mb-16 text-center">Featured Projects</h2>
           <div className="max-w-6xl mx-auto">
-            <div className="grid md:grid-cols-3 gap-8">
+            {/* Debug info - remove in production */}
+            <p className="text-center mb-8 text-gray-400">Displaying {projects.length} projects</p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {projects.map((project, index) => (
-                <Suspense key={index} fallback={<LoadingFallback />}>
-                  <MemoizedProjectCard index={index} />
-                </Suspense>
+                <div key={index} className="project-wrapper">
+                  <Suspense fallback={<div className="h-[320px] bg-gray-800 rounded-xl flex items-center justify-center"><div className="loader"></div></div>}>
+                    <ProjectCard
+                      title={project.title}
+                      description={project.description}
+                      tech={project.tech}
+                      link={project.link}
+                      githubLink={project.githubLink}
+                      image={project.image}
+                      color={project.color}
+                      index={index}
+                    />
+                  </Suspense>
+                </div>
               ))}
             </div>
           </div>

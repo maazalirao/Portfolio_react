@@ -409,3 +409,77 @@ html {
     transform: none !important;
   }
 }
+
+/* Add these animation classes if not already present */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+  opacity: 0;
+}
+
+/* Make sure the card styling exists */
+.card {
+  backdrop-filter: blur(8px);
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 0 20px rgba(14, 165, 233, 0.15);
+  transform: translateY(-5px);
+}
+
+/* Loader styles */
+.loader {
+  width: 30px;
+  height: 30px;
+  border: 3px solid #3b82f6;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Skill bar animation */
+.skill-bar {
+  height: 8px;
+  background: linear-gradient(to right, #0ea5e9, #3b82f6);
+  border-radius: 9999px;
+  transition: width 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* Text gradient utility */
+.text-gradient {
+  background: linear-gradient(to right, #0ea5e9, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Project wrapper to ensure consistent height */
+.project-wrapper {
+  height: 100%;
+  min-height: 320px;
+}

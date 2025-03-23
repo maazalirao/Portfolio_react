@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { Code, ExternalLink, Github } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { ExternalLink, Github } from 'lucide-react';
 
 interface ProjectCardProps {
   title: string;
@@ -26,6 +26,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   const [isTouched, setIsTouched] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
   // Detect mobile devices for better touch interactions
@@ -40,11 +41,6 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Reset touch state when user navigates away
-  useEffect(() => {
-    return () => setIsTouched(false);
-  }, []);
-
   // Mouse event handlers (for desktop)
   const handleMouseEnter = () => {
     if (!isMobile) setIsHovered(true);
@@ -56,26 +52,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 
   // Touch event handlers (for mobile)
   const handleTouchStart = () => {
-    if (isMobile) setIsTouched(true);
+    if (isMobile) setIsTouched(!isTouched);
   };
-  
-  const handleTouchEnd = () => {
-    // On mobile, keep overlay visible until user taps elsewhere
-    // This is handled by the document click listener below
-  };
-
-  // Memoize tech items to avoid recreating on each render
-  const techItems = useMemo(() => 
-    tech.map((item, i) => (
-      <span 
-        key={i} 
-        className="bg-background/30 backdrop-blur-sm px-3 py-1 rounded-full text-sm text-white whitespace-nowrap"
-      >
-        {item}
-      </span>
-    )), 
-    [tech]
-  );
 
   // Determine when to show overlay (mobile vs desktop)
   const showOverlay = isMobile ? isTouched : isHovered;
@@ -84,37 +62,42 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   const handleImageLoad = () => {
     setIsImageLoaded(true);
   };
+  
+  // Handle image loading error
+  const handleImageError = () => {
+    setImageError(true);
+    setIsImageLoaded(true); // Consider it "loaded" even if it's an error
+  };
+
+  // Fallback image if the original fails to load
+  const fallbackImage = "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1770&auto=format&fit=crop";
 
   return (
     <div 
       ref={cardRef}
-      className={`relative w-full overflow-hidden rounded-2xl card animate-fade-in opacity-0 transform h-[340px] shadow-xl transition-transform ${
-        showOverlay ? 'scale-[1.02]' : ''
-      }`}
+      className="relative w-full overflow-hidden rounded-xl shadow-md h-[320px] transform transition-all duration-300 opacity-100 card animate-fade-in"
       style={{ animationDelay: `${index * 0.1 + 0.2}s` }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
     >
       {/* Loading indicator when image not loaded */}
       {!isImageLoaded && (
-        <div className="absolute inset-0 flex items-center justify-center bg-background/90">
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-900">
           <div className="w-8 h-8 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
         </div>
       )}
 
-      {/* Project image with blur-up loading technique */}
+      {/* Project image with fallback */}
       <img 
-        src={image} 
+        src={imageError ? fallbackImage : image}
         alt={title} 
-        className={`absolute inset-0 w-full h-full object-cover transition-all duration-300 ${
+        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
           isImageLoaded ? 'opacity-100' : 'opacity-0'
         }`}
         onLoad={handleImageLoad}
+        onError={handleImageError}
         loading="lazy"
-        width="400"
-        height="300"
       />
       
       {/* Gradient overlay */}
@@ -143,13 +126,20 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         }`}
       >
         <div>
-          <h3 className="text-xl md:text-2xl font-bold text-white mb-2">{title}</h3>
+          <h3 className="text-xl font-bold text-white mb-2">{title}</h3>
           <p className="text-gray-100 mb-4 text-sm md:text-base">{description}</p>
         </div>
         
         <div>
-          <div className="flex flex-wrap gap-2 mb-6">
-            {techItems}
+          <div className="flex flex-wrap gap-2 mb-4">
+            {tech.map((item, i) => (
+              <span 
+                key={i} 
+                className="bg-black/30 backdrop-blur-sm px-3 py-1 rounded-full text-xs text-white whitespace-nowrap"
+              >
+                {item}
+              </span>
+            ))}
           </div>
           
           <div className="flex items-center space-x-3">
