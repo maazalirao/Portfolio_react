@@ -1,9 +1,10 @@
-import React, { useEffect, useRef, useState, useCallback, memo } from 'react';
+import React, { useEffect, useRef, useState, useCallback, memo, lazy, Suspense } from 'react';
 import { Code, Database, Award, Terminal, Server, Cloud, BookOpen, Briefcase } from 'lucide-react';
 import Navigation from './components/Navigation';
-import ProjectCard from './components/ProjectCard';
-import HeroSection from './components/HeroSection';
-import TerminalIntro from './components/TerminalIntro';
+// Lazy load components
+const ProjectCard = lazy(() => import('./components/ProjectCard'));
+const HeroSection = lazy(() => import('./components/HeroSection'));
+const TerminalIntro = lazy(() => import('./components/TerminalIntro'));
 
 // Extend Window interface to include our custom property
 declare global {
@@ -12,8 +13,11 @@ declare global {
   }
 }
 
+// Loading fallback
+const LoadingFallback = () => <div className="min-h-screen flex items-center justify-center"><div className="loader"></div></div>;
+
 // Memoized ProjectCard component to prevent unnecessary re-renders
-const MemoizedProjectCard = memo(ProjectCard);
+const MemoizedProjectCard = memo(lazy(() => import('./components/ProjectCard')));
 
 function App() {
   const [activeSection, setActiveSection] = useState('home');
@@ -24,6 +28,7 @@ function App() {
   const skillsRef = useRef<HTMLDivElement>(null);
   const projectsRef = useRef<HTMLDivElement>(null);
   const lastScrollTime = useRef(0);
+  const scrollThrottleTimeout = useRef<number | null>(null);
 
   // Detect mobile devices
   useEffect(() => {
@@ -31,9 +36,9 @@ function App() {
       const mobile = window.innerWidth < 768;
       setIsMobile(mobile);
       
-      // Show terminal on first visit for all users (desktop and mobile)
+      // Only show terminal on first visit
       const hasVisited = localStorage.getItem('has_visited');
-      if (!hasVisited) {
+      if (!hasVisited && !mobile) { // Don't show on mobile devices
         setShowTerminal(true);
         localStorage.setItem('has_visited', 'true');
       }
@@ -41,48 +46,57 @@ function App() {
 
     checkMobile();
     
-    // For testing - force show terminal regardless of visited status
-    // Comment this line in production if you only want to show on first visit
-    setShowTerminal(true);
+    // Only uncomment for testing
+    // setShowTerminal(true);
     
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   // Hide terminal intro animation
-  const handleTerminalComplete = () => {
-    console.log('Terminal animation completed');
+  const handleTerminalComplete = useCallback(() => {
     setShowTerminal(false);
-  };
+  }, []);
 
-  // Log current state
-  useEffect(() => {
-    console.log('Terminal visibility state:', showTerminal);
-  }, [showTerminal]);
-
-  // Throttled scroll handler to improve performance
+  // Optimized scroll handler with throttling
   const handleScroll = useCallback(() => {
-    const now = Date.now();
+    // Avoid multiple scroll events
+    if (scrollThrottleTimeout.current) return;
     
-    // Throttle scroll events to every 100ms
-    if (now - lastScrollTime.current > 100) {
-      lastScrollTime.current = now;
+    scrollThrottleTimeout.current = window.setTimeout(() => {
+      const now = Date.now();
       
-      setIsScrolling(true);
-      clearTimeout(window.scrollTimeout);
-      window.scrollTimeout = setTimeout(() => setIsScrolling(false), 150);
+      // Throttle scroll events to every 200ms (more aggressive throttling)
+      if (now - lastScrollTime.current > 200) {
+        lastScrollTime.current = now;
+        
+        setIsScrolling(true);
+        clearTimeout(window.scrollTimeout);
+        window.scrollTimeout = setTimeout(() => setIsScrolling(false), 200);
 
-      const sections = ['home', 'skills', 'experience', 'projects', 'contact'];
-      const current = sections.find(section => {
-        const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          return rect.top >= 0 && rect.top <= 300;
+        // Use IntersectionObserver-like technique - check only visible viewport
+        const viewportHeight = window.innerHeight;
+        const sections = ['home', 'skills', 'experience', 'projects', 'contact'];
+        let currentSection = activeSection;
+        
+        for (const section of sections) {
+          const element = document.getElementById(section);
+          if (element) {
+            const rect = element.getBoundingClientRect();
+            if (rect.top <= viewportHeight/2 && rect.bottom >= viewportHeight/2) {
+              currentSection = section;
+              break;
+            }
+          }
         }
-        return false;
-      });
-      if (current && current !== activeSection) setActiveSection(current);
-    }
+        
+        if (currentSection !== activeSection) {
+          setActiveSection(currentSection);
+        }
+      }
+      
+      scrollThrottleTimeout.current = null;
+    }, 50);
   }, [activeSection]);
 
   useEffect(() => {
@@ -102,7 +116,7 @@ function App() {
           }
         });
       },
-      { threshold: 0.2 } // Lower threshold to trigger earlier
+      { threshold: 0.1, rootMargin: "50px" } // Adjusted for earlier loading
     );
 
     if (skillsRef.current) {
@@ -113,6 +127,9 @@ function App() {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => {
       window.removeEventListener('scroll', handleScroll);
+      if (scrollThrottleTimeout.current) {
+        clearTimeout(scrollThrottleTimeout.current);
+      }
       observer.disconnect();
     };
   }, [handleScroll]);
@@ -188,7 +205,9 @@ function App() {
         )}
       </button>
 
-      <HeroSection />
+      <Suspense fallback={<LoadingFallback />}>
+        <HeroSection />
+      </Suspense>
 
       {/* Skills Section */}
       <section id="skills" className="py-20 relative overflow-hidden" ref={skillsRef}>
@@ -349,7 +368,9 @@ function App() {
           <div className="max-w-6xl mx-auto">
             <div className="grid md:grid-cols-3 gap-8">
               {projects.map((project, index) => (
-                <MemoizedProjectCard key={index} {...project} index={index} />
+                <Suspense key={index} fallback={<LoadingFallback />}>
+                  <MemoizedProjectCard project={project} index={index} />
+                </Suspense>
               ))}
             </div>
           </div>
@@ -416,7 +437,9 @@ function App() {
 
       {/* Terminal Intro for mobile devices */}
       {showTerminal && (
-        <TerminalIntro onComplete={handleTerminalComplete} />
+        <Suspense fallback={<LoadingFallback />}>
+          <TerminalIntro onComplete={handleTerminalComplete} />
+        </Suspense>
       )}
     </div>
   );

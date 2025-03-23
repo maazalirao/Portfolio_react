@@ -1,11 +1,26 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState, lazy, Suspense } from 'react';
 import { Mail, Layout, Award, Terminal, Server, Cloud } from 'lucide-react';
 
 const HeroSection: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
   
-  // Particles animation
+  // Particles animation - now loads conditionally
   useEffect(() => {
+    if (!isVisible) {
+      // Only initialize animation when component is visible
+      const observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      }, { threshold: 0.1 });
+      
+      const section = document.getElementById('home');
+      if (section) observer.observe(section);
+      return () => observer.disconnect();
+    }
+    
     const canvas = canvasRef.current;
     if (!canvas) return;
     
@@ -15,7 +30,7 @@ const HeroSection: React.FC = () => {
     let particles: Particle[] = [];
     let animationFrameId: number;
     let lastTime = 0;
-    const FPS = 30; // Limit FPS to reduce CPU usage
+    const FPS = 20; // Further reduced FPS to improve performance
     const fpsInterval = 1000 / FPS;
     
     const resizeCanvas = () => {
@@ -45,8 +60,8 @@ const HeroSection: React.FC = () => {
         this.x = Math.random() * canvas.width;
         this.y = Math.random() * canvas.height;
         this.size = Math.random() * 2 + 0.5;
-        this.speedX = Math.random() * 1.5 - 0.75; // Reduced speed for better performance
-        this.speedY = Math.random() * 1.5 - 0.75; // Reduced speed for better performance
+        this.speedX = Math.random() * 1 - 0.5; // Further reduced speed
+        this.speedY = Math.random() * 1 - 0.5; // Further reduced speed
         
         const colors = ['#60a5fa', '#34d399', '#a78bfa', '#f472b6'];
         this.color = colors[Math.floor(Math.random() * colors.length)];
@@ -74,8 +89,8 @@ const HeroSection: React.FC = () => {
     const initParticles = () => {
       if (!canvas) return;
       particles = [];
-      // Significantly reduce particle count based on screen size
-      const particleCount = Math.min(Math.floor(canvas.width / 20), 50);
+      // Drastically reduce particle count
+      const particleCount = Math.min(Math.floor(canvas.width / 40), 30);
       for (let i = 0; i < particleCount; i++) {
         particles.push(new Particle());
       }
@@ -83,11 +98,11 @@ const HeroSection: React.FC = () => {
     
     const connectParticles = () => {
       if (!ctx) return;
-      const maxDistance = 120; // Reduced connection distance
+      const maxDistance = 100; // Further reduced connection distance
       
       for (let i = 0; i < particles.length; i++) {
-        // Only connect to nearest neighbors, not all particles
-        for (let j = i; j < Math.min(i + 5, particles.length); j++) {
+        // Only connect to 3 nearest neighbors
+        for (let j = i; j < Math.min(i + 3, particles.length); j++) {
           if (i === j) continue;
           
           const dx = particles[i].x - particles[j].x;
@@ -97,7 +112,7 @@ const HeroSection: React.FC = () => {
           if (distance < maxDistance) {
             ctx.beginPath();
             ctx.strokeStyle = `rgba(125, 211, 252, ${1 - distance / maxDistance})`;
-            ctx.lineWidth = 0.5;
+            ctx.lineWidth = 0.3; // Thinner lines
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
             ctx.stroke();
@@ -143,7 +158,7 @@ const HeroSection: React.FC = () => {
       window.removeEventListener('resize', resizeCanvas);
       cancelAnimationFrame(animationFrameId);
     };
-  }, []);
+  }, [isVisible]);
 
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-gray-900 to-black">

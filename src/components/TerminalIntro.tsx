@@ -15,18 +15,11 @@ const TerminalIntro = ({ onComplete, userName = "Maaz Ali Rao" }: TerminalIntroP
   
   const terminalRef = useRef<HTMLDivElement>(null);
 
-  // Debug logging
-  useEffect(() => {
-    console.log('TerminalIntro component mounted');
-    return () => console.log('TerminalIntro component unmounted');
-  }, []);
-
-  // Terminal lines to be displayed with humor (shorter version)
+  // Terminal lines to be displayed (shorter version)
   const terminalLines = [
     "$ sudo initialize-portfolio",
     "> ACCESS GRANTED. Welcome aboard! 🚀",
     `> Initializing ${userName}'s profile...`,
-    "> Caffeinating developer... ☕",
     "> Launching in 3...2...1...",
   ];
 
@@ -34,28 +27,27 @@ const TerminalIntro = ({ onComplete, userName = "Maaz Ali Rao" }: TerminalIntroP
   useEffect(() => {
     const cursorInterval = setInterval(() => {
       setShowCursor(prev => !prev);
-    }, 400);
+    }, 500);
     
     return () => clearInterval(cursorInterval);
   }, []);
 
-  // Type each character with a random delay for realistic effect
+  // Type each character with a fixed delay for better performance
   useEffect(() => {
     if (currentLineIndex >= terminalLines.length) {
       setTimeout(() => {
         setComplete(true);
         setTimeout(() => {
-          console.log('Animation complete, triggering onComplete callback');
           onComplete();
-        }, 300);
-      }, 800); // Moderate delay at the end
+        }, 200);
+      }, 500);
       return;
     }
 
     if (currentCharIndex < terminalLines[currentLineIndex].length) {
       const timeout = setTimeout(() => {
         setCurrentCharIndex(prev => prev + 1);
-      }, Math.random() * 15 + 8); // Slightly faster typing speed
+      }, 15); // Fixed typing speed
       
       return () => clearTimeout(timeout);
     } else {
@@ -64,7 +56,7 @@ const TerminalIntro = ({ onComplete, userName = "Maaz Ali Rao" }: TerminalIntroP
         setLines(prev => [...prev, terminalLines[currentLineIndex]]);
         setCurrentLineIndex(prev => prev + 1);
         setCurrentCharIndex(0);
-      }, Math.random() * 80 + 50); // Slightly shorter pause between lines
+      }, 50); // Fixed pause between lines
       
       return () => clearTimeout(timeout);
     }
@@ -83,7 +75,7 @@ const TerminalIntro = ({ onComplete, userName = "Maaz Ali Rao" }: TerminalIntroP
     : '';
 
   return (
-    <div className={`fixed inset-0 z-50 flex items-center justify-center bg-black/90 transition-opacity duration-500 ${complete ? 'opacity-0' : 'opacity-100'}`} style={{ zIndex: 9999 }}>
+    <div className={`fixed inset-0 z-50 flex items-center justify-center bg-black/90 transition-opacity duration-300 ${complete ? 'opacity-0' : 'opacity-100'}`} style={{ zIndex: 9999 }}>
       <div className="w-full max-w-md h-[40vh] mx-4 flex flex-col overflow-hidden rounded-lg border border-gray-700 bg-gray-900 shadow-xl animate-scale-in">
         {/* Terminal header */}
         <div className="flex items-center justify-between bg-gray-800 px-4 py-2 border-b border-gray-700">
