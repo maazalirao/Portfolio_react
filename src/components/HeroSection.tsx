@@ -197,7 +197,6 @@ const HeroSection: React.FC = () => {
               <div className="inline-block mb-3 sm:mb-6">
                 <span className="px-3 sm:px-4 py-1 sm:py-1.5 text-xs sm:text-sm bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/30 rounded-full text-cyan-300 font-medium flex items-center">
                   <span className="inline-block w-2 h-2 bg-cyan-400 rounded-full mr-2 animate-pulse"></span>
-                  <span className="whitespace-nowrap">Available for new projects</span>
                 </span>
               </div>
             </div>

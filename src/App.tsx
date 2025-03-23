@@ -32,7 +32,7 @@ function App() {
   const [isScrolling, setIsScrolling] = useState(false);
   const [isLightMode, setIsLightMode] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [showTerminal, setShowTerminal] = useState(false);
+  const [showTerminal, setShowTerminal] = useState(true); // Show terminal on startup
   const skillsRef = useRef<HTMLDivElement>(null);
   const projectsRef = useRef<HTMLDivElement>(null);
   const lastScrollTime = useRef(0);
@@ -44,17 +44,23 @@ function App() {
       const mobile = window.innerWidth < 768;
       setIsMobile(mobile);
       
-      // Only show terminal on first visit
+      // Always show terminal on first visit for better experience
       const hasVisited = localStorage.getItem('has_visited');
-      if (!hasVisited && !mobile) { // Don't show on mobile devices
+      if (!hasVisited) {
         setShowTerminal(true);
         localStorage.setItem('has_visited', 'true');
+      } else {
+        // For returning visitors, still show terminal on desktop but for a shorter time
+        if (!mobile) {
+          // If desktop, still show terminal but they can skip it
+          setShowTerminal(true);
+        }
       }
     };
 
     checkMobile();
     
-    // Only uncomment for testing
+    // Uncomment for testing/demo
     // setShowTerminal(true);
     
     window.addEventListener('resize', checkMobile);
@@ -460,7 +466,7 @@ function App() {
         </div>
       </section>
 
-      {/* Terminal Intro for mobile devices */}
+      {/* Terminal Intro */}
       {showTerminal && (
         <Suspense fallback={<LoadingFallback />}>
           <TerminalIntro onComplete={handleTerminalComplete} />
