@@ -37,6 +37,7 @@ function App() {
   const [isMobile, setIsMobile] = useState(false);
   const [showTerminal, setShowTerminal] = useState(true); // Show terminal on startup
   const skillsRef = useRef<HTMLDivElement>(null);
+  const experienceRef = useRef<HTMLDivElement>(null);
   const projectsRef = useRef<HTMLDivElement>(null);
   const lastScrollTime = useRef(0);
   const scrollThrottleTimeout = useRef<number | null>(null);
@@ -186,6 +187,59 @@ function App() {
     // Light mode is now the alternate mode that needs to be toggled on
     document.documentElement.classList.toggle('light', isLightMode);
   }, [isLightMode]);
+
+  useEffect(() => {
+    // Observer for the experience and education section
+    const experienceObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // Find cards within the experience section
+            const cards = entry.target.querySelectorAll('.card');
+            
+            // Animate each card with a slight delay
+            cards.forEach((card, index) => {
+              setTimeout(() => {
+                // Add the animate class to the card itself
+                card.classList.add('animate');
+                
+                // Animate the bullet points
+                const bullets = card.querySelectorAll('.bullet-point');
+                bullets.forEach(bullet => bullet.classList.add('animate'));
+                
+                // Animate the timeline
+                const timeline = card.querySelector('.timeline-line');
+                if (timeline) timeline.classList.add('animate');
+                
+                // Animate list items with staggered delay
+                const listItems = card.querySelectorAll('.list-item');
+                listItems.forEach((item, i) => {
+                  setTimeout(() => {
+                    item.classList.add('animate');
+                    // Also animate the span inside list item (bullet point)
+                    const span = item.querySelector('span');
+                    if (span) span.classList.add('animate');
+                  }, i * 100);
+                });
+              }, index * 200); // Staggered delay between cards
+            });
+            
+            // Unobserve once animations have been triggered
+            experienceObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
+
+    if (experienceRef.current) {
+      experienceObserver.observe(experienceRef.current);
+    }
+
+    return () => {
+      experienceObserver.disconnect();
+    };
+  }, []);
 
   // Memoize projects array to prevent recreation on each render
   const projects = React.useMemo(() => [
@@ -375,7 +429,7 @@ function App() {
       </section>
 
       {/* Experience & Education */}
-      <section id="experience" className="py-20 relative overflow-hidden">
+      <section id="experience" className="py-20 relative overflow-hidden" ref={experienceRef}>
         <div className="container mx-auto px-6 relative">
           <h2 className="text-4xl font-bold text-gradient mb-16 text-center">Experience & Education</h2>
           <div className="max-w-4xl mx-auto">
@@ -386,24 +440,24 @@ function App() {
                     <Briefcase className="text-cyan-400 mr-3" size={24} />
                     <h3 className="text-2xl font-bold">Experience</h3>
                   </div>
-                  <div className="relative pl-6 border-l border-gray-800">
+                  <div className="relative pl-6 border-l border-gray-800 timeline-line">
                     <div className="mb-8 relative">
-                      <div className="absolute -left-[29px] top-1 w-4 h-4 rounded-full bg-cyan-400"></div>
+                      <div className="absolute -left-[29px] top-1 w-4 h-4 rounded-full bg-cyan-400 bullet-point"></div>
                       <div className="flex items-center justify-between mb-2">
                         <h4 className="text-xl font-semibold">Full Stack Developer</h4>
                         <span className="text-cyan-400">2021 - Present</span>
                       </div>
                       <p className="text-gray-400 mb-3">Freelance</p>
                       <ul className="space-y-2 text-gray-300">
-                        <li className="flex items-start">
+                        <li className="flex items-start list-item" style={{ transitionDelay: '100ms' }}>
                           <span className="text-cyan-400 mr-2">•</span>
                           Built scalable web applications with React.js and Node.js
                         </li>
-                        <li className="flex items-start">
+                        <li className="flex items-start list-item" style={{ transitionDelay: '200ms' }}>
                           <span className="text-cyan-400 mr-2">•</span>
                           Developed cross-platform mobile apps using React Native
                         </li>
-                        <li className="flex items-start">
+                        <li className="flex items-start list-item" style={{ transitionDelay: '300ms' }}>
                           <span className="text-cyan-400 mr-2">•</span>
                           Implemented real-time features using WebSocket
                         </li>
@@ -419,9 +473,9 @@ function App() {
                     <BookOpen className="text-emerald-400 mr-3" size={24} />
                     <h3 className="text-2xl font-bold">Education</h3>
                   </div>
-                  <div className="relative pl-6 border-l border-gray-800">
+                  <div className="relative pl-6 border-l border-gray-800 timeline-line">
                     <div className="mb-8 relative">
-                      <div className="absolute -left-[29px] top-1 w-4 h-4 rounded-full bg-emerald-400"></div>
+                      <div className="absolute -left-[29px] top-1 w-4 h-4 rounded-full bg-emerald-400 bullet-point"></div>
                       <div className="flex items-center justify-between mb-2">
                         <h4 className="text-xl font-semibold">BS Computer Science</h4>
                         <span className="text-emerald-400">2021 - 2025</span>
@@ -429,7 +483,7 @@ function App() {
                       <p className="text-gray-400">COMSATS University Islamabad</p>
                     </div>
                     <div className="relative">
-                      <div className="absolute -left-[29px] top-1 w-4 h-4 rounded-full bg-emerald-400"></div>
+                      <div className="absolute -left-[29px] top-1 w-4 h-4 rounded-full bg-emerald-400 bullet-point"></div>
                       <div className="flex items-center justify-between mb-2">
                         <h4 className="text-xl font-semibold">Pre-Engineering</h4>
                         <span className="text-emerald-400"></span>
