@@ -37,19 +37,11 @@ function App() {
   const [isLightMode, setIsLightMode] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [showTerminal, setShowTerminal] = useState(true); // Show terminal on startup
-  const [visibleProjects, setVisibleProjects] = useState<number[]>([]); // Start with empty array
   const skillsRef = useRef<HTMLDivElement>(null);
   const experienceRef = useRef<HTMLDivElement>(null);
   const projectsRef = useRef<HTMLDivElement>(null);
   const lastScrollTime = useRef(0);
   const scrollThrottleTimeout = useRef<number | null>(null);
-
-  // Initialize visible projects
-  useEffect(() => {
-    // Initially show all projects
-    const allProjects = Array.from({ length: projects.length }, (_, i) => i);
-    setVisibleProjects(allProjects);
-  }, []);
 
   // Detect mobile devices with optimized logic
   useEffect(() => {
@@ -83,32 +75,39 @@ function App() {
     setShowTerminal(false);
   }, []);
 
-  // Optimized scroll handler with throttling
+  // Optimized scroll handler with improved throttling
   const handleScroll = useCallback(() => {
-    // Avoid multiple scroll events
+    // Skip processing if already throttled
     if (scrollThrottleTimeout.current) return;
     
-    scrollThrottleTimeout.current = window.setTimeout(() => {
+    scrollThrottleTimeout.current = window.requestAnimationFrame(() => {
       const now = Date.now();
       
-      // Throttle scroll events to every 200ms (more aggressive throttling)
-      if (now - lastScrollTime.current > 200) {
+      // More aggressive throttling (250ms) for better performance
+      if (now - lastScrollTime.current > 250) {
         lastScrollTime.current = now;
         
+        // Set scroll state
         setIsScrolling(true);
         clearTimeout(window.scrollTimeout);
         window.scrollTimeout = setTimeout(() => setIsScrolling(false), 200);
 
-        // Use IntersectionObserver-like technique - check only visible viewport
-        const viewportHeight = window.innerHeight;
+        // Only calculate active section if needed
+        if (isMobile) return; // Skip on mobile for better performance
+        
+        // Use simpler section detection for better performance
+        const scrollPosition = window.scrollY + window.innerHeight / 2;
         const sections = ['home', 'skills', 'experience', 'projects', 'contact'];
         let currentSection = activeSection;
         
+        // Find current section using scroll position instead of getBoundingClientRect
         for (const section of sections) {
           const element = document.getElementById(section);
           if (element) {
-            const rect = element.getBoundingClientRect();
-            if (rect.top <= viewportHeight/2 && rect.bottom >= viewportHeight/2) {
+            const sectionTop = element.offsetTop;
+            const sectionBottom = sectionTop + element.offsetHeight;
+            
+            if (scrollPosition >= sectionTop && scrollPosition <= sectionBottom) {
               currentSection = section;
               break;
             }
@@ -121,8 +120,8 @@ function App() {
       }
       
       scrollThrottleTimeout.current = null;
-    }, 50);
-  }, [activeSection]);
+    });
+  }, [activeSection, isMobile]);
 
   useEffect(() => {
     // Observer for the overall skills section
@@ -200,9 +199,9 @@ function App() {
             // Find cards within the experience section
             const cards = entry.target.querySelectorAll('.card');
             
-            // Animate each card with a slight delay
+            // Animate each card with a slight delay - using requestAnimationFrame for smoother performance
             cards.forEach((card, index) => {
-              setTimeout(() => {
+              window.requestAnimationFrame(() => {
                 // Add the animate class to the card itself
                 card.classList.add('animate');
                 
@@ -224,7 +223,7 @@ function App() {
                     if (span) span.classList.add('animate');
                   }, i * 100);
                 });
-              }, index * 200); // Staggered delay between cards
+              });
             });
             
             // Unobserve once animations have been triggered
@@ -232,7 +231,7 @@ function App() {
           }
         });
       },
-      { threshold: 0.2 }
+      { threshold: 0.2, rootMargin: "50px 0px" }
     );
 
     if (experienceRef.current) {
@@ -323,70 +322,6 @@ function App() {
     ),
     [projects]
   );
-
-  // Function to check if a project should be visible
-  const isInViewport = useCallback((index: number) => {
-    return visibleProjects.includes(index);
-  }, [visibleProjects]);
-
-  // Update visible projects when scrolling with improved stability
-  useEffect(() => {
-    // Only apply lazy loading on desktop for better mobile performance
-    const shouldUseWindowing = !isMobile;
-    
-    // Initialize all projects as visible on mobile
-    if (isMobile) {
-      const allProjects = Array.from({ length: projects.length }, (_, i) => i);
-      setVisibleProjects(allProjects);
-      return;
-    }
-    
-    let debounceTimeout: number | null = null;
-    
-    const updateVisibleProjects = () => {
-      if (!projectsRef.current || !shouldUseWindowing) return;
-      
-      // Clear previous debounce
-      if (debounceTimeout) {
-        window.clearTimeout(debounceTimeout);
-      }
-      
-      // Debounce the calculation to prevent flickering
-      debounceTimeout = window.setTimeout(() => {
-        const rect = projectsRef.current?.getBoundingClientRect();
-        if (!rect || rect.top > window.innerHeight + 500 || rect.bottom < -500) return;
-        
-        // Load projects based on scroll position with a larger buffer
-        const scrollPosition = window.scrollY;
-        const windowHeight = window.innerHeight;
-        const projectsTop = projectsRef.current?.offsetTop || 0;
-        
-        // Calculate which projects should be visible with more buffer
-        const startIndex = Math.max(0, Math.floor((scrollPosition - projectsTop + windowHeight) / 320) - 2);
-        const endIndex = Math.min(projects.length - 1, Math.ceil((scrollPosition - projectsTop + 2 * windowHeight) / 320) + 2);
-        
-        const newVisibleProjects = [];
-        for (let i = startIndex; i <= endIndex; i++) {
-          newVisibleProjects.push(i);
-        }
-        
-        // Only update if the visible projects have changed
-        if (JSON.stringify(newVisibleProjects) !== JSON.stringify(visibleProjects)) {
-          setVisibleProjects(newVisibleProjects);
-        }
-      }, 100); // 100ms debounce
-    };
-    
-    // Add scroll listener with passive option
-    window.addEventListener('scroll', updateVisibleProjects, { passive: true });
-    // Initial update
-    updateVisibleProjects();
-    
-    return () => {
-      window.removeEventListener('scroll', updateVisibleProjects);
-      if (debounceTimeout) window.clearTimeout(debounceTimeout);
-    };
-  }, [projects.length, isMobile, visibleProjects]);
 
   return (
     <div className={`min-h-screen text-text overflow-x-hidden ${isLightMode ? 'light' : ''}`}>
@@ -570,19 +505,11 @@ function App() {
         <div className="container mx-auto px-6 relative">
           <h2 className="text-4xl font-bold text-gradient mb-16 text-center">Featured Projects</h2>
           <div className="max-w-6xl mx-auto">
-            {/* Debug info - remove in production */}
-            <p className="text-center mb-8 text-gray-400">Displaying {projects.length} projects</p>
-            
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {projects.map((project, index) => (
                 <div 
                   key={index} 
                   className="project-wrapper" 
-                  style={{ 
-                    opacity: isInViewport(index) ? 1 : 0,
-                    transition: 'opacity 0.3s ease',
-                    height: '320px',
-                  }}
                 >
                   <Suspense fallback={
                     <div className="h-[320px] bg-gray-800/50 rounded-xl flex items-center justify-center">

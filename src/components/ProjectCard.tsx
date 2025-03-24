@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, memo } from 'react';
 import { ExternalLink, Github } from 'lucide-react';
 
 interface ProjectCardProps {
@@ -29,16 +29,20 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   const [imageError, setImageError] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  // Detect mobile devices for better touch interactions
+  // Detect mobile devices for better touch interactions - using ResizeObserver instead of resize event
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
     
     checkMobile();
-    window.addEventListener('resize', checkMobile);
     
-    return () => window.removeEventListener('resize', checkMobile);
+    const resizeObserver = new ResizeObserver(() => {
+      checkMobile();
+    });
+    
+    resizeObserver.observe(document.body);
+    return () => resizeObserver.disconnect();
   }, []);
 
   // Mouse event handlers (for desktop)
@@ -75,7 +79,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   return (
     <div 
       ref={cardRef}
-      className="relative w-full overflow-hidden rounded-xl shadow-md h-[320px] transform transition-all duration-300 opacity-100 card animate-fade-in"
+      className="relative w-full overflow-hidden rounded-xl shadow-md h-[320px] transform card"
       style={{ animationDelay: `${index * 0.1 + 0.2}s` }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -84,11 +88,11 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       {/* Loading indicator when image not loaded */}
       {!isImageLoaded && (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-900">
-          <div className="w-8 h-8 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
         </div>
       )}
 
-      {/* Project image with fallback */}
+      {/* Project image with fallback - optimized for performance */}
       <img 
         src={imageError ? fallbackImage : image}
         alt={title} 
@@ -101,9 +105,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         width="400"
         height="320"
         decoding="async"
+        fetchPriority={index < 3 ? "high" : "auto"}
       />
       
-      {/* Gradient overlay */}
+      {/* Gradient overlay - simplified for better performance */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/90 to-black/20"></div>
       
       {/* Bottom content (always visible) */}
@@ -112,19 +117,15 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         
         {/* Mobile instruction indicator */}
         {isMobile && !isTouched && (
-          <div className="absolute top-3 right-3 bg-gray-900/80 backdrop-blur-sm text-white text-xs py-1 px-2 rounded-md flex items-center">
+          <div className="absolute top-3 right-3 bg-gray-900/80 text-white text-xs py-1 px-2 rounded-md flex items-center">
             <span className="mr-1">Tap</span>
-            <span className="relative flex h-2 w-2 mr-1">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
-            </span>
           </div>
         )}
       </div>
       
       {/* Overlay content (visible on hover/touch) */}
       <div 
-        className={`absolute inset-0 z-20 flex flex-col justify-between p-6 bg-gradient-to-t ${color} bg-opacity-80 backdrop-blur-sm transition-opacity duration-300 ${
+        className={`absolute inset-0 z-20 flex flex-col justify-between p-6 bg-gradient-to-t ${color} bg-opacity-80 transition-opacity duration-200 ${
           showOverlay ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
       >
@@ -138,7 +139,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             {tech.map((item, i) => (
               <span 
                 key={i} 
-                className="bg-black/30 backdrop-blur-sm px-3 py-1 rounded-full text-xs text-white whitespace-nowrap"
+                className="bg-black/30 px-3 py-1 rounded-full text-xs text-white whitespace-nowrap"
               >
                 {item}
               </span>
@@ -146,22 +147,24 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           </div>
           
           <div className="flex items-center space-x-3">
-            <a 
-              href={link} 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="bg-white/20 backdrop-blur-lg text-white px-4 py-2 rounded-lg flex items-center hover:bg-white/30 transition-colors"
-            >
-              <ExternalLink size={16} className="mr-2" />
-              <span>View Project</span>
-            </a>
+            {link && (
+              <a 
+                href={link} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="bg-white/20 text-white px-4 py-2 rounded-lg flex items-center hover:bg-white/30 transition-colors"
+              >
+                <ExternalLink size={16} className="mr-2" />
+                <span>View Project</span>
+              </a>
+            )}
             
             {githubLink && (
               <a 
                 href={githubLink} 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="bg-white/20 backdrop-blur-lg text-white p-2 rounded-lg flex items-center hover:bg-white/30 transition-colors"
+                className="bg-white/20 text-white p-2 rounded-lg flex items-center hover:bg-white/30 transition-colors"
               >
                 <Github size={18} />
               </a>
@@ -173,4 +176,5 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   );
 };
 
-export default ProjectCard;
+// Use memo to prevent unnecessary re-renders
+export default memo(ProjectCard);

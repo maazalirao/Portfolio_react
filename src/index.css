@@ -38,6 +38,7 @@ body {
   color: var(--text);
   text-rendering: optimizeSpeed;
   -webkit-font-smoothing: antialiased;
+  overflow-anchor: none;
 }
 
 /* Simplified and optimized keyframes */
@@ -84,6 +85,7 @@ body {
   background-color: rgba(15, 23, 42, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.05);
   overflow: hidden;
+  will-change: transform, opacity;
 }
 
 .skill-bar {
@@ -126,6 +128,9 @@ body {
 /* Smooth scrolling for desktop */
 html {
   scroll-behavior: smooth;
+  text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Basic scrollbar styling with better performance */
@@ -285,6 +290,10 @@ html {
     transform: scale(1) !important;
     opacity: 1 !important;
   }
+  
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 /* Reduced motion preferences */
@@ -380,6 +389,12 @@ html {
 .project-wrapper {
   height: 100%;
   min-height: 320px;
+  opacity: 0;
+  animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
 }
 
 /* Animation for rotating bullets */
@@ -455,4 +470,19 @@ html {
 .list-item.animate span {
   transform: scale(1.2);
   color: #60a5fa;
+}
+
+/* Optimize animations for better performance */
+.animate-spin {
+  animation-duration: 1s;
+}
+
+/* Reduce content jumping during scrolling */
+body {
+  overflow-anchor: none;
+}
+
+/* Optimize image loading */
+img {
+  content-visibility: auto;
 }
