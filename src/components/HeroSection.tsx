@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, lazy, Suspense } from 'react';
 import { Mail, Layout, Award, Terminal, Server, Cloud } from 'lucide-react';
+import profilePic from '../pf1.jpg'; // Import the profile image
 
 const HeroSection: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -216,9 +217,14 @@ const HeroSection: React.FC = () => {
               <div className="inline-flex items-center space-x-4 bg-gray-800/30 backdrop-blur-sm rounded-full px-4 py-2 border border-gray-700/50 hover:border-cyan-500/50 transition-colors">
                 <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-cyan-400 shadow-sm shadow-cyan-500/30">
                   <img 
-                    src="/src/pf1.jpg" 
+                    src={profilePic} 
                     alt="Maaz Ali Rao" 
-                    className="w-full h-full object-cover object-center"
+                    className="w-full h-full object-cover object-center filter brightness-90 contrast-110 saturate-90"
+                    style={{ 
+                      objectPosition: "0 20%",
+                      backgroundBlendMode: "overlay",
+                      boxShadow: "inset 0 0 10px rgba(0,0,0,0.5)"
+                    }}
                   />
                 </div>
                 <div className="flex items-center space-x-2">
