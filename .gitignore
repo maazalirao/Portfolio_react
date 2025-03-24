@@ -22,3 +22,14 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Personal profile images
+src/pf1.jpg
+public/profile.jpg
+**/pf1.jpg
+**/profile.jpg
+
+# Specific components you want to ignore
+# Add the paths to any components you want to ignore below
+# For example:
+# src/components/SomeComponent.tsx
