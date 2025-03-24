@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState, lazy, Suspense } from 'react';
 import { Mail, Layout, Award, Terminal, Server, Cloud } from 'lucide-react';
-import profilePic from '../pf1.jpg'; // Import the profile image
 
 const HeroSection: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const skillsRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [isSkillsVisible, setIsSkillsVisible] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   
   // Check if the device is mobile
@@ -16,6 +17,22 @@ const HeroSection: React.FC = () => {
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+  
+  // Set up observer for skills section
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        setIsSkillsVisible(true);
+        observer.disconnect();
+      }
+    }, { threshold: 0.3 });
+    
+    if (skillsRef.current) {
+      observer.observe(skillsRef.current);
+    }
+    
+    return () => observer.disconnect();
   }, []);
   
   // Particles animation - now loads conditionally
@@ -217,7 +234,7 @@ const HeroSection: React.FC = () => {
               <div className="inline-flex items-center space-x-4 bg-gray-800/30 backdrop-blur-sm rounded-full px-4 py-2 border border-gray-700/50 hover:border-cyan-500/50 transition-colors">
                 <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-cyan-400 shadow-sm shadow-cyan-500/30">
                   <img 
-                    src={profilePic} 
+                    src="/images/pf1.jpg" 
                     alt="Maaz Ali Rao" 
                     className="w-full h-full object-cover object-center filter brightness-90 contrast-110 saturate-90"
                     style={{ 
@@ -267,7 +284,7 @@ const HeroSection: React.FC = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 animate-fade-in-up opacity-0" style={{ animationDelay: '0.6s' }}>
               <div className="stats-card p-2.5 sm:p-4 bg-gray-900/50 rounded-lg border border-gray-800/50 hover:border-cyan-800/50 transition-colors">
                 <Award className="text-cyan-400 mb-1 sm:mb-2" size={isMobile ? 16 : 20} />
-                <span className="text-lg sm:text-2xl font-bold text-white">3+</span>
+                <span className="text-lg sm:text-2xl font-bold text-white">4+</span>
                 <span className="text-xs sm:text-sm text-gray-400 block">Years Experience</span>
               </div>
               <div className="stats-card p-2.5 sm:p-4 bg-gray-900/50 rounded-lg border border-gray-800/50 hover:border-emerald-800/50 transition-colors">
@@ -324,7 +341,7 @@ const HeroSection: React.FC = () => {
               </div>
               
               {/* Skills section - Condensed on mobile */}
-              <div className="w-full max-w-md space-y-2 sm:space-y-5">
+              <div ref={skillsRef} className="w-full max-w-md space-y-2 sm:space-y-5">
                 <div className="text-center mb-2 sm:mb-6">
                   <h3 className="text-base sm:text-xl font-medium text-white mb-1">Core Technologies</h3>
                   <div className="w-10 sm:w-16 h-1 bg-gradient-to-r from-cyan-500 to-blue-500 mx-auto rounded-full"></div>
@@ -337,7 +354,7 @@ const HeroSection: React.FC = () => {
                     <span className="text-xs sm:text-base text-cyan-400 font-medium">98%</span>
                   </div>
                   <div className="w-full h-1 sm:h-2 bg-gray-800 rounded-full overflow-hidden">
-                    <div className="h-full rounded-full bg-gradient-to-r from-blue-600 to-cyan-400" style={{ width: '98%' }}></div>
+                    <div className={`h-full rounded-full bg-gradient-to-r from-blue-600 to-cyan-400 transition-all duration-1000 ease-out ${isSkillsVisible ? 'w-[98%]' : 'w-0'}`}></div>
                   </div>
                 </div>
                 
@@ -347,7 +364,7 @@ const HeroSection: React.FC = () => {
                     <span className="text-xs sm:text-base text-emerald-400 font-medium">94%</span>
                   </div>
                   <div className="w-full h-1 sm:h-2 bg-gray-800 rounded-full overflow-hidden">
-                    <div className="h-full rounded-full bg-gradient-to-r from-emerald-600 to-emerald-400" style={{ width: '94%' }}></div>
+                    <div className={`h-full rounded-full bg-gradient-to-r from-emerald-600 to-emerald-400 transition-all duration-1000 ease-out delay-100 ${isSkillsVisible ? 'w-[94%]' : 'w-0'}`}></div>
                   </div>
                 </div>
                 
@@ -357,7 +374,7 @@ const HeroSection: React.FC = () => {
                     <span className="text-xs sm:text-base text-purple-400 font-medium">92%</span>
                   </div>
                   <div className="w-full h-1 sm:h-2 bg-gray-800 rounded-full overflow-hidden">
-                    <div className="h-full rounded-full bg-gradient-to-r from-purple-600 to-purple-400" style={{ width: '92%' }}></div>
+                    <div className={`h-full rounded-full bg-gradient-to-r from-purple-600 to-purple-400 transition-all duration-1000 ease-out delay-200 ${isSkillsVisible ? 'w-[92%]' : 'w-0'}`}></div>
                   </div>
                 </div>
 
@@ -367,7 +384,7 @@ const HeroSection: React.FC = () => {
                     <span className="text-xs sm:text-base text-pink-400 font-medium">90%</span>
                   </div>
                   <div className="w-full h-1 sm:h-2 bg-gray-800 rounded-full overflow-hidden">
-                    <div className="h-full rounded-full bg-gradient-to-r from-pink-600 to-pink-400" style={{ width: '90%' }}></div>
+                    <div className={`h-full rounded-full bg-gradient-to-r from-pink-600 to-pink-400 transition-all duration-1000 ease-out delay-300 ${isSkillsVisible ? 'w-[90%]' : 'w-0'}`}></div>
                   </div>
                 </div>
               </div>
