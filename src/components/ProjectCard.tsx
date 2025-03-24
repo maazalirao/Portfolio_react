@@ -123,11 +123,14 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         )}
       </div>
       
-      {/* Overlay content (visible on hover/touch) */}
+      {/* Overlay content (visible on hover/touch) - optimized for performance */}
       <div 
-        className={`absolute inset-0 z-20 flex flex-col justify-between p-6 bg-gradient-to-t ${color} bg-opacity-80 transition-opacity duration-200 ${
-          showOverlay ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        className={`absolute inset-0 z-20 flex flex-col justify-between p-6 bg-black/80 transform transition-all will-change-transform duration-150 ${
+          showOverlay ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3 pointer-events-none'
         }`}
+        style={{
+          background: showOverlay ? `linear-gradient(to top, ${color.replace('from-', '').replace('to-', '')})` : 'transparent'
+        }}
       >
         <div>
           <h3 className="text-xl font-bold text-white mb-2">{title}</h3>
