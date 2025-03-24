@@ -3,14 +3,8 @@ import { Code, Database, Award, Terminal, Server, Cloud, BookOpen, Briefcase } f
 import Navigation from './components/Navigation';
 // Lazy load components
 const ProjectCard = lazy(() => import('./components/ProjectCard'));
-const HeroSection = lazy(() => 
-  import('./components/HeroSection').then(module => {
-    // Add a small artificial delay to ensure navigation loads first
-    return new Promise(resolve => {
-      setTimeout(() => resolve(module), 100);
-    });
-  })
-);
+// Cast the import to any to avoid type checking issues with memoized components
+const HeroSection = lazy(() => import('./components/HeroSection') as any);
 const TerminalIntro = lazy(() => import('./components/TerminalIntro'));
 
 // Import pesticides project image
