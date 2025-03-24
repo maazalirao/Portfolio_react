@@ -37,12 +37,19 @@ function App() {
   const [isLightMode, setIsLightMode] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [showTerminal, setShowTerminal] = useState(true); // Show terminal on startup
-  const [visibleProjects, setVisibleProjects] = useState<number[]>([0, 1, 2, 3]); // Initially visible projects
+  const [visibleProjects, setVisibleProjects] = useState<number[]>([]); // Start with empty array
   const skillsRef = useRef<HTMLDivElement>(null);
   const experienceRef = useRef<HTMLDivElement>(null);
   const projectsRef = useRef<HTMLDivElement>(null);
   const lastScrollTime = useRef(0);
   const scrollThrottleTimeout = useRef<number | null>(null);
+
+  // Initialize visible projects
+  useEffect(() => {
+    // Initially show all projects
+    const allProjects = Array.from({ length: projects.length }, (_, i) => i);
+    setVisibleProjects(allProjects);
+  }, []);
 
   // Detect mobile devices with optimized logic
   useEffect(() => {
@@ -322,29 +329,52 @@ function App() {
     return visibleProjects.includes(index);
   }, [visibleProjects]);
 
-  // Update visible projects when scrolling
+  // Update visible projects when scrolling with improved stability
   useEffect(() => {
+    // Only apply lazy loading on desktop for better mobile performance
+    const shouldUseWindowing = !isMobile;
+    
+    // Initialize all projects as visible on mobile
+    if (isMobile) {
+      const allProjects = Array.from({ length: projects.length }, (_, i) => i);
+      setVisibleProjects(allProjects);
+      return;
+    }
+    
+    let debounceTimeout: number | null = null;
+    
     const updateVisibleProjects = () => {
-      if (!projectsRef.current) return;
+      if (!projectsRef.current || !shouldUseWindowing) return;
       
-      const rect = projectsRef.current.getBoundingClientRect();
-      if (rect.top > window.innerHeight || rect.bottom < 0) return;
-      
-      // Load projects based on scroll position
-      const scrollPosition = window.scrollY;
-      const windowHeight = window.innerHeight;
-      const projectsTop = projectsRef.current.offsetTop;
-      
-      // Calculate which projects should be visible
-      const startIndex = Math.max(0, Math.floor((scrollPosition - projectsTop + windowHeight) / 320) - 1);
-      const endIndex = Math.min(projects.length - 1, Math.ceil((scrollPosition - projectsTop + 2 * windowHeight) / 320));
-      
-      const newVisibleProjects = [];
-      for (let i = startIndex; i <= endIndex; i++) {
-        newVisibleProjects.push(i);
+      // Clear previous debounce
+      if (debounceTimeout) {
+        window.clearTimeout(debounceTimeout);
       }
       
-      setVisibleProjects(newVisibleProjects);
+      // Debounce the calculation to prevent flickering
+      debounceTimeout = window.setTimeout(() => {
+        const rect = projectsRef.current?.getBoundingClientRect();
+        if (!rect || rect.top > window.innerHeight + 500 || rect.bottom < -500) return;
+        
+        // Load projects based on scroll position with a larger buffer
+        const scrollPosition = window.scrollY;
+        const windowHeight = window.innerHeight;
+        const projectsTop = projectsRef.current?.offsetTop || 0;
+        
+        // Calculate which projects should be visible with more buffer
+        const startIndex = Math.max(0, Math.floor((scrollPosition - projectsTop + windowHeight) / 320) - 2);
+        const endIndex = Math.min(projects.length - 1, Math.ceil((scrollPosition - projectsTop + 2 * windowHeight) / 320) + 2);
+        
+        const newVisibleProjects = [];
+        for (let i = startIndex; i <= endIndex; i++) {
+          newVisibleProjects.push(i);
+        }
+        
+        // Only update if the visible projects have changed
+        if (JSON.stringify(newVisibleProjects) !== JSON.stringify(visibleProjects)) {
+          setVisibleProjects(newVisibleProjects);
+        }
+      }, 100); // 100ms debounce
     };
     
     // Add scroll listener with passive option
@@ -352,8 +382,11 @@ function App() {
     // Initial update
     updateVisibleProjects();
     
-    return () => window.removeEventListener('scroll', updateVisibleProjects);
-  }, [projects.length]);
+    return () => {
+      window.removeEventListener('scroll', updateVisibleProjects);
+      if (debounceTimeout) window.clearTimeout(debounceTimeout);
+    };
+  }, [projects.length, isMobile, visibleProjects]);
 
   return (
     <div className={`min-h-screen text-text overflow-x-hidden ${isLightMode ? 'light' : ''}`}>
@@ -546,8 +579,9 @@ function App() {
                   key={index} 
                   className="project-wrapper" 
                   style={{ 
-                    visibility: isInViewport(index) ? 'visible' : 'hidden',
-                    height: isInViewport(index) ? 'auto' : '320px',
+                    opacity: isInViewport(index) ? 1 : 0,
+                    transition: 'opacity 0.3s ease',
+                    height: '320px',
                   }}
                 >
                   <Suspense fallback={
