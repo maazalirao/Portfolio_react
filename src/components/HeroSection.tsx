@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { Mail, Layout, Award, Terminal, Server, Cloud } from 'lucide-react';
-import profilePic from '../pf1.jpg'; // Import the profile image
+import profilePic from '../../public/images/pf1.jpg'; // Import the profile image
 
 const HeroSection: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
