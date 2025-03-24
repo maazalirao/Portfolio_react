@@ -173,7 +173,7 @@ function App() {
       tech: ["MongoDB", "Express", "React", "Node.js"],
       link: "https://maazstory.vercel.app",
       githubLink: "https://github.com/yourusername/interactive-story",
-      image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1964&auto=format&fit=crop",
+      image: "https://images.unsplash.com/photo-1519682577862-22b62b24e493?q=80&w=2070&auto=format&fit=crop",
       color: "from-indigo-400 to-purple-500"
     },
     {
