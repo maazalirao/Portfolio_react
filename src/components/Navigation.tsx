@@ -22,12 +22,12 @@ const Navigation: React.FC<NavigationProps> = ({ activeSection, isScrolling }) =
   const toggleMenu = useCallback(() => {
     setIsOpen(prev => !prev);
   }, []);
-  
+
   // Memoize close handler
   const closeMenu = useCallback(() => {
     setIsOpen(false);
   }, []);
-  
+
   return (
     <nav className={`fixed top-0 w-full z-50 transition-all duration-200 ${
       isScrolling ? 'py-2 bg-gray-900/80 backdrop-blur shadow-lg' : 'py-4 bg-transparent'
@@ -52,15 +52,15 @@ const Navigation: React.FC<NavigationProps> = ({ activeSection, isScrolling }) =
         </ul>
         
         {/* Mobile Navigation Toggle */}
-        <button
+              <button
           onClick={toggleMenu}
           className="md:hidden text-gray-300 hover:text-white"
           aria-label="Toggle menu"
         >
           {isOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
-      </div>
-      
+              </button>
+            </div>
+            
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden absolute top-full left-0 w-full bg-gray-900/95 backdrop-blur-md shadow-lg">
