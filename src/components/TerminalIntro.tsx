@@ -15,12 +15,11 @@ const TerminalIntro = ({ onComplete, userName = "Maaz Ali Rao" }: TerminalIntroP
   
   const terminalRef = useRef<HTMLDivElement>(null);
 
-  // Terminal lines to be displayed (shorter version)
+  // Terminal lines to be displayed (even shorter version)
   const terminalLines = [
-    "$ sudo initialize-portfolio",
-    "> ACCESS GRANTED. Welcome aboard! 🚀",
-    `> Initializing ${userName}'s profile...`,
-    "> Launching in 3...2...1...",
+    "$ initialize",
+    `> Loading ${userName}'s portfolio...`,
+    "> Ready!"
   ];
 
   // Cursor blinking effect
@@ -32,31 +31,32 @@ const TerminalIntro = ({ onComplete, userName = "Maaz Ali Rao" }: TerminalIntroP
     return () => clearInterval(cursorInterval);
   }, []);
 
-  // Type each character with a fixed delay for better performance
+  // Type each character with a faster delay for better performance
   useEffect(() => {
     if (currentLineIndex >= terminalLines.length) {
+      // Complete faster
       setTimeout(() => {
         setComplete(true);
         setTimeout(() => {
           onComplete();
-        }, 200);
-      }, 500);
+        }, 100);
+      }, 300);
       return;
     }
 
     if (currentCharIndex < terminalLines[currentLineIndex].length) {
       const timeout = setTimeout(() => {
         setCurrentCharIndex(prev => prev + 1);
-      }, 15); // Fixed typing speed
+      }, 8); // Faster typing speed
       
       return () => clearTimeout(timeout);
     } else {
-      // Move to next line
+      // Move to next line faster
       const timeout = setTimeout(() => {
         setLines(prev => [...prev, terminalLines[currentLineIndex]]);
         setCurrentLineIndex(prev => prev + 1);
         setCurrentCharIndex(0);
-      }, 50); // Fixed pause between lines
+      }, 30); // Shorter pause between lines
       
       return () => clearTimeout(timeout);
     }
@@ -75,25 +75,19 @@ const TerminalIntro = ({ onComplete, userName = "Maaz Ali Rao" }: TerminalIntroP
     : '';
 
   return (
-    <div className={`fixed inset-0 z-50 flex items-center justify-center bg-black/90 transition-opacity duration-300 ${complete ? 'opacity-0' : 'opacity-100'}`} style={{ zIndex: 9999 }}>
-      <div className="w-full max-w-md h-[40vh] mx-4 flex flex-col overflow-hidden rounded-lg border border-gray-700 bg-gray-900 shadow-xl animate-scale-in">
+    <div className={`fixed inset-0 z-50 flex items-center justify-center bg-black/80 transition-opacity duration-300 ${complete ? 'opacity-0' : 'opacity-100'}`} style={{ zIndex: 9999 }}>
+      <div className="w-full max-w-sm h-[25vh] mx-4 flex flex-col overflow-hidden rounded-lg border border-gray-700 bg-gray-900 shadow-xl animate-scale-in">
         {/* Terminal header */}
-        <div className="flex items-center justify-between bg-gray-800 px-4 py-2 border-b border-gray-700">
+        <div className="flex items-center justify-between bg-gray-800 px-3 py-1 border-b border-gray-700">
           <div className="flex items-center">
-            <div className="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
-            <div className="w-3 h-3 bg-yellow-500 rounded-full mr-2"></div>
-            <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+            <div className="w-2 h-2 bg-red-500 rounded-full mr-1"></div>
+            <div className="w-2 h-2 bg-yellow-500 rounded-full mr-1"></div>
+            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
           </div>
           <div className="text-xs text-gray-300 font-mono">portfolio.exe</div>
           <div className="flex items-center">
-            <button className="text-gray-400 hover:text-gray-300 p-1">
-              <Minimize size={14} />
-            </button>
-            <button className="text-gray-400 hover:text-gray-300 p-1">
-              <Maximize size={14} />
-            </button>
             <button className="text-gray-400 hover:text-gray-300 p-1" onClick={onComplete}>
-              <X size={14} />
+              <X size={12} />
             </button>
           </div>
         </div>
@@ -101,7 +95,7 @@ const TerminalIntro = ({ onComplete, userName = "Maaz Ali Rao" }: TerminalIntroP
         {/* Terminal content */}
         <div 
           ref={terminalRef}
-          className="flex-1 bg-black font-mono text-green-500 p-4 overflow-y-auto"
+          className="flex-1 bg-black font-mono text-green-500 p-3 overflow-y-auto text-sm"
         >
           {/* Previous completed lines */}
           {lines.map((line, index) => (
@@ -115,19 +109,19 @@ const TerminalIntro = ({ onComplete, userName = "Maaz Ali Rao" }: TerminalIntroP
             <div className="flex">
               <div>{currentLine}</div>
               {showCursor && (
-                <div className="w-2 h-4 bg-green-500 ml-1 terminal-cursor"></div>
+                <div className="w-1.5 h-3.5 bg-green-500 ml-0.5 terminal-cursor"></div>
               )}
             </div>
           )}
         </div>
         
         {/* Skip button */}
-        <div className="bg-gray-800 px-4 py-2 border-t border-gray-700 flex justify-end">
+        <div className="bg-gray-800 px-3 py-1 border-t border-gray-700 flex justify-end">
           <button 
             onClick={onComplete} 
             className="text-xs text-gray-400 hover:text-white flex items-center transition-colors"
           >
-            Skip <ChevronRight size={14} className="ml-1" />
+            Skip <ChevronRight size={12} className="ml-1" />
           </button>
         </div>
       </div>

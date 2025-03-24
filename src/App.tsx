@@ -47,24 +47,28 @@ function App() {
       const mobile = window.innerWidth < 768;
       setIsMobile(mobile);
       
-      // Always show terminal on first visit for better experience
+      // Check if user has visited before
       const hasVisited = localStorage.getItem('has_visited');
       if (!hasVisited) {
+        // First time visitor - show terminal
         setShowTerminal(true);
         localStorage.setItem('has_visited', 'true');
       } else {
-        // For returning visitors, still show terminal on desktop but for a shorter time
-        if (!mobile) {
-          // If desktop, still show terminal but they can skip it
+        // Returning visitor - skip terminal on mobile and show briefly on desktop
+        if (mobile) {
+          // Skip terminal on mobile completely
+          setShowTerminal(false);
+        } else {
+          // On desktop, auto-dismiss after 1.5 seconds
           setShowTerminal(true);
+          setTimeout(() => {
+            setShowTerminal(false);
+          }, 1500);
         }
       }
     };
 
     checkMobile();
-    
-    // Uncomment for testing/demo
-    // setShowTerminal(true);
     
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
@@ -117,27 +121,54 @@ function App() {
   }, [activeSection]);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
+    // Observer for the overall skills section
+    const skillsObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            // Use requestAnimationFrame for smoother animation
-            requestAnimationFrame(() => {
-              const bars = entry.target.querySelectorAll('.skill-bar');
-              bars.forEach((bar: Element) => {
-                if (bar instanceof HTMLElement) {
-                  bar.style.width = bar.dataset.width || '0%';
-                }
-              });
+            // Once skills section is visible, observe each card separately
+            const cards = entry.target.querySelectorAll('.card');
+            
+            // Create a new observer for the skill cards
+            const cardObserver = new IntersectionObserver(
+              (cardEntries) => {
+                cardEntries.forEach((cardEntry) => {
+                  if (cardEntry.isIntersecting) {
+                    // Get all skill bars in this card
+                    const bars = cardEntry.target.querySelectorAll('.skill-bar');
+                    
+                    // Animate each bar with a staggered delay
+                    bars.forEach((bar: Element, index: number) => {
+                      if (bar instanceof HTMLElement) {
+                        setTimeout(() => {
+                          bar.style.width = bar.dataset.width || '0%';
+                        }, 300 + (index * 100)); // Staggered delay for each bar
+                      }
+                    });
+                    
+                    // Unobserve the card once animation has triggered
+                    cardObserver.unobserve(cardEntry.target);
+                  }
+                });
+              },
+              { threshold: 0.5 }
+            );
+            
+            // Observe each card
+            cards.forEach(card => {
+              cardObserver.observe(card);
             });
+            
+            // Unobserve the main skills section
+            skillsObserver.unobserve(entry.target);
           }
         });
       },
-      { threshold: 0.1, rootMargin: "50px" } // Adjusted for earlier loading
+      { threshold: 0.1 }
     );
 
     if (skillsRef.current) {
-      observer.observe(skillsRef.current);
+      skillsObserver.observe(skillsRef.current);
     }
 
     // Add passive option to scroll listener for better performance
@@ -147,7 +178,7 @@ function App() {
       if (scrollThrottleTimeout.current) {
         clearTimeout(scrollThrottleTimeout.current);
       }
-      observer.disconnect();
+      skillsObserver.disconnect();
     };
   }, [handleScroll]);
 
