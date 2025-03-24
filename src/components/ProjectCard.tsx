@@ -98,6 +98,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         onLoad={handleImageLoad}
         onError={handleImageError}
         loading="lazy"
+        width="400"
+        height="320"
+        decoding="async"
       />
       
       {/* Gradient overlay */}

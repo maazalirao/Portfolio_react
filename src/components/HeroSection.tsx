@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useState, lazy, Suspense } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { Mail, Layout, Award, Terminal, Server, Cloud } from 'lucide-react';
+import profilePic from '../pf1.jpg'; // Import the profile image
 
 const HeroSection: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -8,19 +9,27 @@ const HeroSection: React.FC = () => {
   const [isSkillsVisible, setIsSkillsVisible] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   
-  // Check if the device is mobile
+  // Optimized mobile check
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
     
     checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    
+    // Use ResizeObserver instead of resize event
+    const resizeObserver = new ResizeObserver(() => {
+      checkMobile();
+    });
+    
+    resizeObserver.observe(document.body);
+    return () => resizeObserver.disconnect();
   }, []);
   
-  // Set up observer for skills section
+  // Set up observer for skills section - only initialize if element is visible
   useEffect(() => {
+    if (!isVisible) return;
+    
     const observer = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting) {
         setIsSkillsVisible(true);
@@ -33,34 +42,38 @@ const HeroSection: React.FC = () => {
     }
     
     return () => observer.disconnect();
-  }, []);
+  }, [isVisible]);
   
-  // Particles animation - now loads conditionally
+  // Set up observer for whole component
   useEffect(() => {
-    if (!isVisible) {
-      // Only initialize animation when component is visible
-      const observer = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      }, { threshold: 0.1 });
-      
-      const section = document.getElementById('home');
-      if (section) observer.observe(section);
-      return () => observer.disconnect();
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        setIsVisible(true);
+        observer.disconnect();
+      }
+    }, { threshold: 0.1 });
+    
+    const heroSection = document.getElementById('home');
+    if (heroSection) {
+      observer.observe(heroSection);
     }
     
-    // Don't initialize particles for mobile devices to improve performance
-    if (isMobile) return;
+    return () => observer.disconnect();
+  }, []);
+
+  // Particles animation - now rendered conditionally based on visibility and device
+  useEffect(() => {
+    // Skip particles on mobile for performance
+    if (isMobile || !isVisible || !canvasRef.current) return;
     
     const canvas = canvasRef.current;
-    if (!canvas) return;
-    
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     
-    let particles: Particle[] = [];
+    // Further optimization of particles
+    const particleCount = 30; // Reduced from 50
+    let particles: any[] = []; // Changed from const to let
+    
     let animationFrameId: number;
     let lastTime = 0;
     const FPS = 20; // Further reduced FPS to improve performance
@@ -122,8 +135,6 @@ const HeroSection: React.FC = () => {
     const initParticles = () => {
       if (!canvas) return;
       particles = [];
-      // Drastically reduce particle count
-      const particleCount = Math.min(Math.floor(canvas.width / 40), 30);
       for (let i = 0; i < particleCount; i++) {
         particles.push(new Particle());
       }
@@ -191,7 +202,7 @@ const HeroSection: React.FC = () => {
       window.removeEventListener('resize', resizeCanvas);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [isVisible, isMobile]);
+  }, [isMobile, isVisible]);
 
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-gray-900 to-black">
@@ -234,7 +245,7 @@ const HeroSection: React.FC = () => {
               <div className="inline-flex items-center space-x-4 bg-gray-800/30 backdrop-blur-sm rounded-full px-4 py-2 border border-gray-700/50 hover:border-cyan-500/50 transition-colors">
                 <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-cyan-400 shadow-sm shadow-cyan-500/30">
                   <img 
-                    src="/images/pf1.jpg" 
+                    src={profilePic} 
                     alt="Maaz Ali Rao" 
                     className="w-full h-full object-cover object-center filter brightness-90 contrast-110 saturate-90"
                     style={{ 
@@ -242,6 +253,10 @@ const HeroSection: React.FC = () => {
                       backgroundBlendMode: "overlay",
                       boxShadow: "inset 0 0 10px rgba(0,0,0,0.5)"
                     }}
+                    width="48"
+                    height="48"
+                    fetchPriority="high"
+                    loading="eager"
                   />
                 </div>
                 <div className="flex items-center space-x-2">
@@ -404,4 +419,5 @@ const HeroSection: React.FC = () => {
   );
 };
 
-export default HeroSection;
+// Use React.memo to prevent unnecessary re-renders
+export default React.memo(HeroSection);

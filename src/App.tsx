@@ -3,7 +3,14 @@ import { Code, Database, Award, Terminal, Server, Cloud, BookOpen, Briefcase } f
 import Navigation from './components/Navigation';
 // Lazy load components
 const ProjectCard = lazy(() => import('./components/ProjectCard'));
-const HeroSection = lazy(() => import('./components/HeroSection'));
+const HeroSection = lazy(() => 
+  import('./components/HeroSection').then(module => {
+    // Add a small artificial delay to ensure navigation loads first
+    return new Promise(resolve => {
+      setTimeout(() => resolve(module), 100);
+    });
+  })
+);
 const TerminalIntro = lazy(() => import('./components/TerminalIntro'));
 
 // Import pesticides project image
@@ -16,8 +23,8 @@ declare global {
   }
 }
 
-// Loading fallback
-const LoadingFallback = () => <div className="min-h-screen flex items-center justify-center"><div className="loader"></div></div>;
+// Loading fallback with reduced complexity
+const LoadingFallback = () => <div className="min-h-[200px] flex items-center justify-center"><div className="loader"></div></div>;
 
 // Define the project interface
 interface Project {
@@ -36,43 +43,38 @@ function App() {
   const [isLightMode, setIsLightMode] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [showTerminal, setShowTerminal] = useState(true); // Show terminal on startup
+  const [visibleProjects, setVisibleProjects] = useState<number[]>([0, 1, 2, 3]); // Initially visible projects
   const skillsRef = useRef<HTMLDivElement>(null);
   const experienceRef = useRef<HTMLDivElement>(null);
   const projectsRef = useRef<HTMLDivElement>(null);
   const lastScrollTime = useRef(0);
   const scrollThrottleTimeout = useRef<number | null>(null);
 
-  // Detect mobile devices
+  // Detect mobile devices with optimized logic
   useEffect(() => {
     const checkMobile = () => {
       const mobile = window.innerWidth < 768;
       setIsMobile(mobile);
       
-      // Check if user has visited before
+      // Check if user has visited before - optimize terminal display
       const hasVisited = localStorage.getItem('has_visited');
       if (!hasVisited) {
         // First time visitor - show terminal
         setShowTerminal(true);
         localStorage.setItem('has_visited', 'true');
       } else {
-        // Returning visitor - skip terminal on mobile and show briefly on desktop
-        if (mobile) {
-          // Skip terminal on mobile completely
-          setShowTerminal(false);
-        } else {
-          // On desktop, auto-dismiss after 1.5 seconds
-          setShowTerminal(true);
-          setTimeout(() => {
-            setShowTerminal(false);
-          }, 1500);
-        }
+        // Skip terminal for returning visitors to improve performance
+        setShowTerminal(false);
       }
     };
 
     checkMobile();
     
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    // Use resize observer instead of resize event for better performance
+    const resizeObserver = new ResizeObserver(checkMobile);
+    resizeObserver.observe(document.body);
+    
+    return () => resizeObserver.disconnect();
   }, []);
 
   // Hide terminal intro animation
@@ -248,7 +250,7 @@ function App() {
       description: "A comprehensive inventory system for tracking pesticides with real-time stock monitoring",
       tech: ["React", "Node.js", "MongoDB", "Express"],
       link: "https://fyp40.vercel.app",
-      githubLink: "https://github.com/yourusername/pesticides-inventory",
+      githubLink: "https://github.com/maazalirao/Pesticides-Inventory-Management",
       image: pesticidesImage,
       color: "from-teal-400 to-emerald-500"
     },
@@ -257,7 +259,7 @@ function App() {
       description: "A dynamic storytelling platform where users can create and experience interactive narratives",
       tech: ["MongoDB", "Express", "React", "Node.js"],
       link: "https://maazstory.vercel.app",
-      githubLink: "https://github.com/yourusername/interactive-story",
+      githubLink: "https://github.com/maazalirao/Interactive-Storytelling-Platform",
       image: "https://images.unsplash.com/photo-1519682577862-22b62b24e493?q=80&w=2070&auto=format&fit=crop",
       color: "from-indigo-400 to-purple-500"
     },
@@ -266,7 +268,7 @@ function App() {
       description: "A modern rickshaw service platform built with Next.js and Node.js",
       tech: ["React", "Node.js", "MongoDB"],
       link: "https://tiktak-nyc.com/",
-      githubLink: "https://github.com/yourusername/tiktak-nyc",
+      githubLink: "https://github.com/maazalirao/",
       image: "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80",
       color: "from-cyan-400 to-blue-500"
     },
@@ -275,7 +277,7 @@ function App() {
       description: "A full-stack MERN blog platform with rich content management",
       tech: ["MongoDB", "Express", "React", "Node.js"],
       link: "https://maazblog.vercel.app/",
-      githubLink: "https://github.com/yourusername/mern-blog",
+      githubLink: "https://github.com/maazalirao/blog-MERN",
       image: "https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&q=80",
       color: "from-blue-400 to-indigo-500"
     },
@@ -283,8 +285,8 @@ function App() {
       title: "E-Commerce Platform",
       description: "Full-stack e-commerce solution with real-time updates",
       tech: ["Next.js", "TypeScript", "Prisma"],
-      link: "",
-      githubLink: "https://github.com/yourusername/ecommerce",
+      link: "https://github.com/maazalirao",
+      githubLink: "https://github.com/maazalirao/",
       image: "https://images.unsplash.com/photo-1472437774355-71ab6752b434?auto=format&fit=crop&q=80",
       color: "from-purple-400 to-pink-500"
     },
@@ -292,8 +294,8 @@ function App() {
       title: "Mobile Fitness App",
       description: "Cross-platform fitness tracking application",
       tech: ["React Native", "Firebase", "Redux"],
-      link: "",
-      githubLink: "https://github.com/yourusername/fitness-app",
+      link: "https://github.com/maazalirao",
+      githubLink: "https://github.com/maazalirao/",
       image: "https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?auto=format&fit=crop&q=80",
       color: "from-green-400 to-emerald-500"
     }
@@ -320,6 +322,44 @@ function App() {
     ),
     [projects]
   );
+
+  // Function to check if a project should be visible
+  const isInViewport = useCallback((index: number) => {
+    return visibleProjects.includes(index);
+  }, [visibleProjects]);
+
+  // Update visible projects when scrolling
+  useEffect(() => {
+    const updateVisibleProjects = () => {
+      if (!projectsRef.current) return;
+      
+      const rect = projectsRef.current.getBoundingClientRect();
+      if (rect.top > window.innerHeight || rect.bottom < 0) return;
+      
+      // Load projects based on scroll position
+      const scrollPosition = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const projectsTop = projectsRef.current.offsetTop;
+      
+      // Calculate which projects should be visible
+      const startIndex = Math.max(0, Math.floor((scrollPosition - projectsTop + windowHeight) / 320) - 1);
+      const endIndex = Math.min(projects.length - 1, Math.ceil((scrollPosition - projectsTop + 2 * windowHeight) / 320));
+      
+      const newVisibleProjects = [];
+      for (let i = startIndex; i <= endIndex; i++) {
+        newVisibleProjects.push(i);
+      }
+      
+      setVisibleProjects(newVisibleProjects);
+    };
+    
+    // Add scroll listener with passive option
+    window.addEventListener('scroll', updateVisibleProjects, { passive: true });
+    // Initial update
+    updateVisibleProjects();
+    
+    return () => window.removeEventListener('scroll', updateVisibleProjects);
+  }, [projects.length]);
 
   return (
     <div className={`min-h-screen text-text overflow-x-hidden ${isLightMode ? 'light' : ''}`}>
@@ -508,18 +548,20 @@ function App() {
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {projects.map((project, index) => (
-                <div key={index} className="project-wrapper">
-                  <Suspense fallback={<div className="h-[320px] bg-gray-800 rounded-xl flex items-center justify-center"><div className="loader"></div></div>}>
-                    <ProjectCard
-                      title={project.title}
-                      description={project.description}
-                      tech={project.tech}
-                      link={project.link}
-                      githubLink={project.githubLink}
-                      image={project.image}
-                      color={project.color}
-                      index={index}
-                    />
+                <div 
+                  key={index} 
+                  className="project-wrapper" 
+                  style={{ 
+                    visibility: isInViewport(index) ? 'visible' : 'hidden',
+                    height: isInViewport(index) ? 'auto' : '320px',
+                  }}
+                >
+                  <Suspense fallback={
+                    <div className="h-[320px] bg-gray-800/50 rounded-xl flex items-center justify-center">
+                      <div className="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                  }>
+                    <MemoizedProjectCard index={index} />
                   </Suspense>
                 </div>
               ))}

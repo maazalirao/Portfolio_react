@@ -25,162 +25,60 @@
   --card-border: rgba(0, 0, 0, 0.1);
 }
 
-/* Apply transitions only to specific properties that need them, not to all elements */
-a, button, .hover-transition {
-  transition-property: background-color, border-color, color, transform;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+/* Apply transitions only to specific properties that need them */
+.hover-transition, a:not([class*="contact-link"]), button:not([class*="cyber-btn"]) {
+  transition-property: transform, opacity;
   transition-duration: 150ms;
 }
 
-/* Global background gradient similar to HeroSection */
+/* Global background gradient */
 body {
   background: linear-gradient(to bottom, #0f172a, #020617);
   min-height: 100vh;
   color: var(--text);
+  text-rendering: optimizeSpeed;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* ========== Animations ========== */
-/* Reduced number of keyframes and simplified animations */
-@keyframes gradient {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
+/* Simplified and optimized keyframes */
 @keyframes fadeInUp {
-  0% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes scaleIn {
-  0% {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 @keyframes slideInRight {
-  0% {
-    opacity: 0;
-    transform: translateX(20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes cursor-blink {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0;
-  }
-}
-
-/* Use will-change only where absolutely necessary to improve rendering performance */
+/* Pre-optimize animation classes with minimal properties */
 .animate-fade-in-up {
   animation: fadeInUp 0.5s ease forwards;
-  will-change: transform, opacity;
   animation-duration: 0.4s;
 }
 
 .animate-scale-in {
   animation: scaleIn 0.5s ease forwards;
-  will-change: transform, opacity;
   animation-duration: 0.4s;
 }
 
 .animate-slide-in {
   animation: slideInRight 0.5s ease forwards;
-  will-change: transform, opacity;
   animation-duration: 0.4s;
 }
 
-/* Force hardware acceleration where needed */
-.animate-scale-in,
+/* Force hardware acceleration only where critical */
 .animate-slide-in,
-.transition-transform,
 .terminal-cursor {
   transform: translateZ(0);
-  will-change: transform;
 }
 
-/* Optimized glass effect */
-.glass {
-  background-color: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.cyber-btn {
-  background-color: rgba(96, 165, 250, 0.1);
-  border: 1px solid rgba(96, 165, 250, 0.5);
-  color: #60a5fa;
-  padding: 0.5rem 1rem;
-  border-radius: 0.25rem;
-  font-weight: 500;
-  display: inline-flex;
-  align-items: center;
-}
-
-.cyber-btn:hover {
-  background-color: rgba(96, 165, 250, 0.2);
-  box-shadow: 0 0 10px rgba(96, 165, 250, 0.3);
-}
-
-.cyber-btn-icon {
-  background-color: rgba(96, 165, 250, 0.1);
-  border: 1px solid rgba(96, 165, 250, 0.5);
-  border-radius: 0.25rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.cyber-btn-icon:hover {
-  background-color: rgba(96, 165, 250, 0.2);
-  box-shadow: 0 0 10px rgba(96, 165, 250, 0.3);
-}
-
-.cyber-btn-secondary {
-  background-color: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #f1f5f9;
-  padding: 0.5rem 1rem;
-  border-radius: 0.25rem;
-  font-weight: 500;
-  display: inline-flex;
-  align-items: center;
-}
-
-.cyber-tag {
-  display: inline-block;
-  font-size: 0.75rem;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.25rem;
-  background-color: rgba(96, 165, 250, 0.1);
-  color: #60a5fa;
-  border: 1px solid rgba(96, 165, 250, 0.3);
-}
-
+/* Optimized component styles - only what's needed */
 .card {
   border-radius: 0.5rem;
   background-color: rgba(15, 23, 42, 0.6);
