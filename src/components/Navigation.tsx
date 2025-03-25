@@ -33,7 +33,9 @@ const Navigation: React.FC<NavigationProps> = ({ activeSection, isScrolling }) =
       isScrolling ? 'py-2 bg-gray-900/80 backdrop-blur shadow-lg' : 'py-4 bg-transparent'
     }`}>
       <div className="container mx-auto px-6 flex justify-between items-center">
-        <a href="#home" className="text-2xl font-bold text-white tracking-tight">Maaz<span className="text-cyan-400">.</span>dev</a>
+        <a href="#home" className="text-2xl font-bold text-white tracking-tight">
+          MA<span className="text-cyan-400">.</span>
+        </a>
         
         {/* Desktop Navigation */}
         <ul className="hidden md:flex space-x-8">
