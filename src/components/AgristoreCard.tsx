@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Github, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
 
 // Import multiple images
@@ -26,19 +26,41 @@ const AgristoreCard: React.FC<AgristoreCardProps> = ({
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   // Image array
   const images = [image1, image2, image3, image4, image5, image6, image7];
 
-  // Auto-advance slideshow
+  // Check if element is in viewport
   useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      { threshold: 0.1 }
+    );
+    
+    if (cardRef.current) {
+      observer.observe(cardRef.current);
+    }
+    
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  // Auto-advance slideshow only when visible
+  useEffect(() => {
+    if (!isVisible) return;
+    
     const timer = setInterval(() => {
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
-      setImageLoaded(false); // Reset for next image load
-    }, 3000);
+      setImageLoaded(false);
+    }, 2000);
 
     return () => clearInterval(timer);
-  }, [images.length]);
+  }, [isVisible, images.length]);
 
   // Handle clicking the card
   const handleCardClick = () => {
@@ -78,20 +100,20 @@ const AgristoreCard: React.FC<AgristoreCardProps> = ({
   };
 
   return (
-    <div className="flex flex-col rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 h-full">
+    <div ref={cardRef} className="flex flex-col rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 h-full">
       {/* Image Section */}
-      <div 
-        className="relative overflow-hidden cursor-pointer h-[260px] sm:h-[300px]"
-        onClick={handleCardClick}
-      >
+    <div 
+        className="relative overflow-hidden cursor-pointer h-[450px] xs:h-[500px] sm:h-[550px] w-full"
+      onClick={handleCardClick}
+    >
         {/* Only show loading spinner on initial load, not during transitions */}
         {!imageLoaded && !imageError && currentImageIndex === 0 && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-gray-900 to-gray-800 z-10">
-            <div className="w-12 h-12 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin mb-4"></div>
+          <div className="w-12 h-12 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin mb-4"></div>
             <p className="text-cyan-400 font-medium">Loading image...</p>
-          </div>
-        )}
-        
+        </div>
+      )}
+
         {/* Fallback background if image fails */}
         {imageError && (
           <div className="absolute inset-0 bg-gradient-to-br from-cyan-900/50 via-blue-900/70 to-gray-900"></div>
@@ -102,8 +124,7 @@ const AgristoreCard: React.FC<AgristoreCardProps> = ({
           key={currentImageIndex} // Force re-render on image change
           src={images[currentImageIndex]}
           alt={`${title} screenshot ${currentImageIndex + 1}`}
-          className={`w-full h-full object-cover transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-80'}`}
-          style={{ objectPosition: 'top' }}
+          className={`w-full h-full object-contain transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-80'}`}
           onLoad={handleImageLoad}
           onError={handleImageError}
         />
@@ -184,8 +205,8 @@ const AgristoreCard: React.FC<AgristoreCardProps> = ({
               {item}
             </span>
           ))}
-        </div>
-        
+      </div>
+
         {/* Action buttons */}
         <div className="flex items-center gap-3 mt-auto">
           <a 
@@ -199,13 +220,13 @@ const AgristoreCard: React.FC<AgristoreCardProps> = ({
             <span>View Project</span>
             <ExternalLink size={16} />
           </a>
-          <a 
-            href="#"
-            onClick={handleGithubClick}
+        <a 
+          href="#"
+          onClick={handleGithubClick}
             className="bg-gray-800 text-white p-2 rounded-full flex items-center hover:bg-gray-700 transition-colors shadow-md"
-          >
-            <Github size={18} />
-          </a>
+        >
+          <Github size={18} />
+        </a>
         </div>
       </div>
     </div>
