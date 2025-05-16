@@ -97,12 +97,23 @@ body {
   transition: width 1.2s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
-.project-card {
-  border-radius: 0.5rem;
-  overflow: hidden;
-  background-color: rgba(15, 23, 42, 0.8);
-  opacity: 0;
-  animation: scaleIn 0.5s ease forwards;
+/* Project optimizations */
+.project-wrapper {
+  transition: transform 0.3s ease;
+  will-change: transform;
+  height: 100%;
+}
+
+@media (hover: hover) {
+  .project-wrapper:hover {
+    transform: translateY(-5px);
+  }
+}
+
+/* Improved animation performance for projects */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* Contact section styles */
@@ -156,9 +167,27 @@ html {
   box-shadow: 0 0 20px rgba(96, 165, 250, 0.4);
 }
 
+/* Shadow glow effect for active indicators */
+.shadow-glow {
+  box-shadow: 0 0 15px rgba(96, 165, 250, 0.3);
+}
+
+/* Enhanced glow for featured elements */
+.shadow-cyan {
+  box-shadow: 0 0 15px rgba(34, 211, 238, 0.4), 0 0 30px rgba(34, 211, 238, 0.2);
+}
+
 /* Text gradient for section headings */
 .text-gradient {
   background: linear-gradient(to right, #60a5fa, #34d399);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Alternative text gradient for subheadings */
+.text-gradient-alt {
+  background: linear-gradient(to right, #8b5cf6, #ec4899);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -198,102 +227,78 @@ html {
   }
   
   p, li {
-    font-size: 0.95rem !important;
-    line-height: 1.6 !important;
+    font-size: 1rem !important;
   }
-  
-  /* Improved card styling for mobile */
-  .card {
-    padding: 1.25rem !important;
-    margin-bottom: 1.5rem !important;
-    border-radius: 0.75rem !important;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
-  }
-  
-  /* Restyle buttons for touch */
-  button, a.cyber-btn, a[href^="#"] {
-    min-height: 44px !important;
-    min-width: 44px !important;
-    padding: 0.625rem 1rem !important;
-    font-size: 0.9rem !important;
-    border-radius: 0.5rem !important;
-  }
-  
-  /* Simplify animations for better performance */
-  * {
-    transition-duration: 0.15s !important;
-  }
-  
+
+  /* Reduce animations on mobile for better performance */
   .animate-fade-in-up,
   .animate-scale-in,
   .animate-slide-in {
     animation-duration: 0.3s !important;
   }
-  
-  /* Better spacing */
-  section {
-    padding: 3rem 1rem !important;
-  }
-  
-  .container {
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
-  }
-  
-  /* Improve grid layouts */
-  .grid {
+
+  /* Optimize project card spacing for mobile */
+  #projects .grid {
     gap: 1rem !important;
   }
-  
-  /* Enhanced mobile navigation */
-  nav {
-    backdrop-filter: blur(10px) !important;
-    background-color: rgba(15, 23, 42, 0.85) !important;
+
+  /* Optimize vertical spacing for mobile */
+  section {
+    padding-top: 3rem !important;
+    padding-bottom: 3rem !important;
+  }
+
+  /* Improved project card handling for mobile */
+  .project-wrapper {
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* For low-power devices and users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
   
-  /* Make contact buttons easier to press */
-  .contact-link {
-    padding: 0.875rem !important;
-    margin-bottom: 0.75rem !important;
-    border-radius: 0.625rem !important;
-    background-color: rgba(255, 255, 255, 0.03) !important;
-  }
-  
-  /* Thinner scrollbar for mobile */
-  ::-webkit-scrollbar {
-    width: 4px !important;
-  }
-  
-  /* Better fixed positioning for theme toggle */
-  .fixed.bottom-6.right-6 {
-    bottom: 1rem !important;
-    right: 1rem !important;
-  }
-  
-  /* Mobile-specific hero layout */
-  #home .flex-col.lg\:flex-row {
-    gap: 2rem !important;
-  }
-  
-  /* Remove the stats grid on mobile */
-  #home .grid-cols-2.sm\:grid-cols-4 {
-    gap: 0.5rem !important;
-  }
-  
-  /* Improve skill bars for mobile view */
-  .skill-item {
-    margin-bottom: 1rem !important;
-  }
-  
-  /* Enhanced project cards */
-  .project-card {
-    transform: scale(1) !important;
+  .animate-fade-in-up,
+  .animate-scale-in,
+  .animate-slide-in {
     opacity: 1 !important;
+    transform: none !important;
   }
   
-  html {
-    scroll-behavior: auto;
+  .skill-bar {
+    transition: none !important;
   }
+}
+
+/* ========== PERFORMANCE OPTIMIZATIONS ========== */
+
+/* Enable content-visibility for off-screen sections to improve performance */
+section {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 500px;
+}
+
+/* Optimize image loading */
+img {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 300px;
+}
+
+/* Critical rendering optimizations */
+.card, .project-wrapper {
+  contain: layout style paint;
+}
+
+/* Improve transition performance - specify exact properties to animate */
+.contact-link, button {
+  transition-property: transform, background-color, box-shadow;
+  transition-duration: 0.2s;
+  transition-timing-function: ease-out;
 }
 
 /* Reduced motion preferences */
@@ -482,7 +487,52 @@ body {
   overflow-anchor: none;
 }
 
-/* Optimize image loading */
-img {
-  content-visibility: auto;
+/* Featured project wrapper */
+.project-feature-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(to bottom right, rgba(8, 145, 178, 0.05), rgba(6, 182, 212, 0.02));
+}
+
+.project-feature-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(to right, #06b6d4, #0ea5e9);
+  z-index: 10;
+}
+
+.project-feature-wrapper::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(to right, #0ea5e9, #06b6d4);
+  z-index: 10;
+}
+
+@media (hover: hover) {
+  .project-feature-wrapper:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* Glass effect styles */
+.backdrop-blur-sm {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.backdrop-blur-md {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }

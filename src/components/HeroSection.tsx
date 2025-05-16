@@ -299,7 +299,7 @@ const HeroSection: React.FC = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 animate-fade-in-up opacity-0" style={{ animationDelay: '0.6s' }}>
               <div className="stats-card p-2.5 sm:p-4 bg-gray-900/50 rounded-lg border border-gray-800/50 hover:border-cyan-800/50 transition-colors">
                 <Award className="text-cyan-400 mb-1 sm:mb-2" size={isMobile ? 16 : 20} />
-                <span className="text-lg sm:text-2xl font-bold text-white">3+</span>
+                <span className="text-lg sm:text-2xl font-bold text-white">4+</span>
                 <span className="text-xs sm:text-sm text-gray-400 block">Years Experience</span>
               </div>
               <div className="stats-card p-2.5 sm:p-4 bg-gray-900/50 rounded-lg border border-gray-800/50 hover:border-emerald-800/50 transition-colors">
@@ -343,7 +343,7 @@ const HeroSection: React.FC = () => {
               {/* Experience indicator - Made smaller on mobile */}
               <div className="relative mb-4 sm:mb-12">
                 <div className="w-20 h-20 sm:w-32 sm:h-32 rounded-full flex flex-col items-center justify-center bg-gradient-to-br from-blue-600/20 to-cyan-500/20 border border-cyan-500/30 shadow-lg shadow-cyan-500/10">
-                  <span className="text-3xl sm:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-cyan-200">3+</span>
+                  <span className="text-3xl sm:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-cyan-200">4+</span>
                   <span className="text-xs sm:text-base text-cyan-300 font-medium">Years</span>
                 </div>
                 {/* Decorative rings - Simplified on mobile */}

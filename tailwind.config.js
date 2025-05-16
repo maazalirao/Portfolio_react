@@ -29,6 +29,7 @@ export default {
         'scroll': 'scroll 2s ease-in-out infinite',
         'rotate': 'rotate 60s linear infinite',
         'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
+        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'glitch': 'glitch 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite',
       },
       backdropBlur: {
@@ -37,6 +38,9 @@ export default {
       boxShadow: {
         'glow': '0 0 20px -5px rgba(96, 165, 250, 0.5)',
         'glow-lg': '0 0 40px -10px rgba(96, 165, 250, 0.5)',
+        'glow-cyan': '0 0 20px -5px rgba(6, 182, 212, 0.6)',
+        'glow-emerald': '0 0 20px -5px rgba(16, 185, 129, 0.6)',
+        'glow-purple': '0 0 20px -5px rgba(147, 51, 234, 0.6)',
         'neon': 'var(--neon-glow)',
       },
       transitionProperty: {

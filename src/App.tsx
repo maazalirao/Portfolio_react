@@ -3,12 +3,15 @@ import { Code, Database, Award, Terminal, Server, Cloud, BookOpen, Briefcase } f
 import Navigation from './components/Navigation';
 // Lazy load components
 const ProjectCard = lazy(() => import('./components/ProjectCard'));
+const AgristoreCard = lazy(() => import('./components/AgristoreCard'));
 // Cast the import to any to avoid type checking issues with memoized components
 const HeroSection = lazy(() => import('./components/HeroSection') as any);
 const TerminalIntro = lazy(() => import('./components/TerminalIntro'));
 
-// Import pesticides project image
-import pesticidesImage from './assets/image.png';
+// Import project images
+import clearviewImage from './assets/clearview.png';
+import specialtouchImage from './assets/specialtouch.png';
+import tiktakImage from './assets/tiktak.png';
 
 // Extend Window interface to include our custom property
 declare global {
@@ -37,7 +40,6 @@ function App() {
   const [isLightMode, setIsLightMode] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [showTerminal, setShowTerminal] = useState(true); // Show terminal on startup
-  const skillsRef = useRef<HTMLDivElement>(null);
   const experienceRef = useRef<HTMLDivElement>(null);
   const projectsRef = useRef<HTMLDivElement>(null);
   const lastScrollTime = useRef(0);
@@ -97,7 +99,7 @@ function App() {
         
         // Use simpler section detection for better performance
         const scrollPosition = window.scrollY + window.innerHeight / 2;
-        const sections = ['home', 'skills', 'experience', 'projects', 'contact'];
+        const sections = ['home', 'experience', 'projects', 'contact'];
         let currentSection = activeSection;
         
         // Find current section using scroll position instead of getBoundingClientRect
@@ -124,56 +126,6 @@ function App() {
   }, [activeSection, isMobile]);
 
   useEffect(() => {
-    // Observer for the overall skills section
-    const skillsObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            // Once skills section is visible, observe each card separately
-            const cards = entry.target.querySelectorAll('.card');
-            
-            // Create a new observer for the skill cards
-            const cardObserver = new IntersectionObserver(
-              (cardEntries) => {
-                cardEntries.forEach((cardEntry) => {
-                  if (cardEntry.isIntersecting) {
-                    // Get all skill bars in this card
-                    const bars = cardEntry.target.querySelectorAll('.skill-bar');
-                    
-                    // Animate each bar with a staggered delay
-                    bars.forEach((bar: Element, index: number) => {
-                      if (bar instanceof HTMLElement) {
-                        setTimeout(() => {
-                          bar.style.width = bar.dataset.width || '0%';
-                        }, 300 + (index * 100)); // Staggered delay for each bar
-                      }
-                    });
-                    
-                    // Unobserve the card once animation has triggered
-                    cardObserver.unobserve(cardEntry.target);
-                  }
-                });
-              },
-              { threshold: 0.5 }
-            );
-            
-            // Observe each card
-            cards.forEach(card => {
-              cardObserver.observe(card);
-            });
-            
-            // Unobserve the main skills section
-            skillsObserver.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    if (skillsRef.current) {
-      skillsObserver.observe(skillsRef.current);
-    }
-
     // Add passive option to scroll listener for better performance
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => {
@@ -181,7 +133,6 @@ function App() {
       if (scrollThrottleTimeout.current) {
         clearTimeout(scrollThrottleTimeout.current);
       }
-      skillsObserver.disconnect();
     };
   }, [handleScroll]);
 
@@ -246,60 +197,41 @@ function App() {
   // Memoize projects array to prevent recreation on each render
   const projects = React.useMemo(() => [
     {
-      title: "Pesticides Inventory Management System",
-      description: "A comprehensive inventory system for tracking pesticides with real-time stock monitoring",
-      tech: ["React", "Node.js", "MongoDB", "Express"],
-      link: "https://fyp40.vercel.app",
-      githubLink: "https://github.com/maazalirao/Pesticides-Inventory-Management",
-      image: pesticidesImage,
-      color: "from-teal-400 to-emerald-500"
-    },
-    {
-      title: "Interactive Storytelling",
-      description: "A dynamic storytelling platform where users can create and experience interactive narratives",
-      tech: ["MongoDB", "Express", "React", "Node.js"],
-      link: "https://maazstory.vercel.app",
-      githubLink: "https://github.com/maazalirao/Interactive-Storytelling-Platform",
-      image: "https://images.unsplash.com/photo-1519682577862-22b62b24e493?q=80&w=2070&auto=format&fit=crop",
-      color: "from-indigo-400 to-purple-500"
-    },
-    {
-      title: "TikTak NYC",
-      description: "A modern rickshaw service platform built with Next.js and Node.js",
-      tech: ["React", "Node.js", "MongoDB"],
-      link: "https://tiktak-nyc.com/",
-      githubLink: "https://github.com/maazalirao/",
-      image: "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80",
-      color: "from-cyan-400 to-blue-500"
-    },
-    {
-      title: "Blog Application",
-      description: "A full-stack MERN blog platform with rich content management",
-      tech: ["MongoDB", "Express", "React", "Node.js"],
-      link: "https://maazblog.vercel.app/",
-      githubLink: "https://github.com/maazalirao/blog-MERN",
-      image: "https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&q=80",
+      title: "ClearView Staffing",
+      description: "Global staffing remote services platform built with Next.js",
+      tech: ["Next.js", "React", "Tailwind CSS", "Server Components"],
+      link: "https://clearviewstaffinggrp.com",
+      githubLink: "https://github.com/maazalirao",
+      image: clearviewImage,
       color: "from-blue-400 to-indigo-500"
     },
     {
-      title: "E-Commerce Platform",
-      description: "Full-stack e-commerce solution with real-time updates",
-      tech: ["Next.js", "TypeScript", "Prisma"],
-      link: "https://github.com/maazalirao",
-      githubLink: "https://github.com/maazalirao/",
-      image: "https://images.unsplash.com/photo-1472437774355-71ab6752b434?auto=format&fit=crop&q=80",
-      color: "from-purple-400 to-pink-500"
+      title: "SpecialTouch HomeCare",
+      description: "Home care services platform built with Next.js and modern UI",
+      tech: ["Next.js", "React", "CSS Modules", "Server Components"],
+      link: "https://specialtouch.vercel.app",
+      githubLink: "https://github.com/maazalirao",
+      image: specialtouchImage,
+      color: "from-indigo-400 to-purple-500" 
     },
     {
-      title: "Mobile Fitness App",
-      description: "Cross-platform fitness tracking application",
-      tech: ["React Native", "Firebase", "Redux"],
-      link: "https://github.com/maazalirao",
-      githubLink: "https://github.com/maazalirao/",
-      image: "https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?auto=format&fit=crop&q=80",
-      color: "from-green-400 to-emerald-500"
+      title: "TikTak NYC",
+      description: "A modern rickshaw moving service platform built with React.js",
+      tech: ["React", "CSS", "JavaScript"],
+      link: "https://tiktak-nyc.com/",
+      githubLink: "https://github.com/maazalirao",
+      image: tiktakImage,
+      color: "from-cyan-400 to-blue-500"
     }
   ], []);
+
+  // Agristore project data
+  const agristoreProject = {
+    title: "AgriStore Inventory Management",
+    description: "A comprehensive MERN stack inventory system for agriculture with Clerk authentication",
+    tech: ["MongoDB", "Express", "React", "Node.js", "Clerk Auth"],
+    link: "https://fyp40.vercel.app"
+  };
 
   // Memoized toggle theme handler
   const toggleTheme = useCallback(() => {
@@ -347,88 +279,6 @@ function App() {
       <Suspense fallback={<LoadingFallback />}>
         <HeroSection />
       </Suspense>
-
-      {/* Skills Section */}
-      <section id="skills" className="py-20 relative overflow-hidden" ref={skillsRef}>
-        <div className="container mx-auto px-6 relative">
-          <h2 className="text-4xl font-bold text-gradient mb-16 text-center">Technical Expertise</h2>
-          <div className="max-w-4xl mx-auto">
-            <div className="grid md:grid-cols-2 gap-12">
-              <div className="card p-8 rounded-2xl animate-scale-in opacity-0 hover:shadow-glow" style={{ animationDelay: '0.2s' }}>
-                <div className="flex items-center mb-6">
-                  <Code className="text-cyan-400 mr-3" size={24} />
-                  <h3 className="text-2xl font-bold">Frontend Development</h3>
-                </div>
-                <div className="space-y-6">
-                  <div className="skill-item">
-                    <div className="flex justify-between mb-2">
-                      <span className="text-gray-300">React.js / Next.js</span>
-                      <span className="text-cyan-400">95%</span>
-                    </div>
-                    <div className="bg-gray-800/50 rounded-full">
-                      <div className="skill-bar w-0" data-width="95%"></div>
-                    </div>
-                  </div>
-                  <div className="skill-item">
-                    <div className="flex justify-between mb-2">
-                      <span className="text-gray-300">TypeScript</span>
-                      <span className="text-cyan-400">90%</span>
-                    </div>
-                    <div className="bg-gray-800/50 rounded-full">
-                      <div className="skill-bar w-0" data-width="90%"></div>
-                    </div>
-                  </div>
-                  <div className="skill-item">
-                    <div className="flex justify-between mb-2">
-                      <span className="text-gray-300">React Native</span>
-                      <span className="text-cyan-400">85%</span>
-                    </div>
-                    <div className="bg-gray-800/50 rounded-full">
-                      <div className="skill-bar w-0" data-width="85%"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="card p-8 rounded-2xl animate-scale-in opacity-0 hover:shadow-glow" style={{ animationDelay: '0.4s' }}>
-                <div className="flex items-center mb-6">
-                  <Database className="text-emerald-400 mr-3" size={24} />
-                  <h3 className="text-2xl font-bold">Backend Development</h3>
-                </div>
-                <div className="space-y-6">
-                  <div className="skill-item">
-                    <div className="flex justify-between mb-2">
-                      <span className="text-gray-300">Node.js / Express</span>
-                      <span className="text-emerald-400">90%</span>
-                    </div>
-                    <div className="bg-gray-800/50 rounded-full">
-                      <div className="skill-bar w-0" data-width="90%"></div>
-                    </div>
-                  </div>
-                  <div className="skill-item">
-                    <div className="flex justify-between mb-2">
-                      <span className="text-gray-300">MongoDB</span>
-                      <span className="text-emerald-400">85%</span>
-                    </div>
-                    <div className="bg-gray-800/50 rounded-full">
-                      <div className="skill-bar w-0" data-width="85%"></div>
-                    </div>
-                  </div>
-                  <div className="skill-item">
-                    <div className="flex justify-between mb-2">
-                      <span className="text-gray-300">GraphQL</span>
-                      <span className="text-emerald-400">80%</span>
-                    </div>
-                    <div className="bg-gray-800/50 rounded-full">
-                      <div className="skill-bar w-0" data-width="80%"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Experience & Education */}
       <section id="experience" className="py-20 relative overflow-hidden" ref={experienceRef}>
@@ -500,19 +350,40 @@ function App() {
         </div>
       </section>
 
-      {/* Projects Section */}
+      {/* Projects Section - Redesigned for better mobile performance */}
       <section id="projects" className="py-20 relative overflow-hidden" ref={projectsRef}>
         <div className="container mx-auto px-6 relative">
-          <h2 className="text-4xl font-bold text-gradient mb-16 text-center">Featured Projects</h2>
+          <h2 className="text-4xl font-bold text-gradient mb-16 text-center">My Projects</h2>
+          
+          {/* Featured Agristore Project */}
+          <div className="max-w-6xl mx-auto mb-16">
+            <div className="project-feature-wrapper">
+              <Suspense fallback={
+                <div className="h-[260px] sm:h-[400px] bg-gray-800/50 rounded-xl flex items-center justify-center">
+                  <div className="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              }>
+                <AgristoreCard 
+                  title={agristoreProject.title}
+                  description={agristoreProject.description}
+                  tech={agristoreProject.tech}
+                  link={agristoreProject.link}
+                />
+              </Suspense>
+            </div>
+          </div>
+          
+          {/* Other Projects */}
           <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <h3 className="text-2xl font-bold text-gradient-alt mb-8">Other Projects</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {projects.map((project, index) => (
                 <div 
                   key={index} 
-                  className="project-wrapper" 
+                  className="project-wrapper"
                 >
                   <Suspense fallback={
-                    <div className="h-[320px] bg-gray-800/50 rounded-xl flex items-center justify-center">
+                    <div className="h-[260px] sm:h-[320px] bg-gray-800/50 rounded-xl flex items-center justify-center">
                       <div className="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
                     </div>
                   }>
@@ -525,14 +396,120 @@ function App() {
         </div>
       </section>
 
-      {/* Contact Section */}
+      {/* Technical Expertise Section */}
+      <section className="py-20 relative overflow-hidden bg-gray-900/50">
+        <div className="container mx-auto px-6 relative">
+          <h2 className="text-4xl font-bold text-gradient mb-16 text-center">Technical Expertise</h2>
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {/* Frontend Development */}
+              <div className="bg-gray-800/70 p-6 rounded-xl hover:shadow-glow transition-shadow">
+                <div className="flex items-center mb-6">
+                  <div className="p-3 bg-cyan-500/20 rounded-full mr-4">
+                    <Code className="text-cyan-400" size={24} />
+                  </div>
+                  <h3 className="text-xl font-bold text-white">Frontend Development</h3>
+                </div>
+                <ul className="space-y-3 text-gray-300">
+                  <li className="flex items-center">
+                    <span className="text-cyan-400 mr-2">•</span>
+                    React.js / Next.js
+                  </li>
+                  <li className="flex items-center">
+                    <span className="text-cyan-400 mr-2">•</span>
+                    TypeScript
+                  </li>
+                  <li className="flex items-center">
+                    <span className="text-cyan-400 mr-2">•</span>
+                    Tailwind CSS
+                  </li>
+                  <li className="flex items-center">
+                    <span className="text-cyan-400 mr-2">•</span>
+                    Redux / Context API
+                  </li>
+                  <li className="flex items-center">
+                    <span className="text-cyan-400 mr-2">•</span>
+                    Responsive Design
+                  </li>
+                </ul>
+              </div>
+
+              {/* Backend Development */}
+              <div className="bg-gray-800/70 p-6 rounded-xl hover:shadow-glow transition-shadow">
+                <div className="flex items-center mb-6">
+                  <div className="p-3 bg-emerald-500/20 rounded-full mr-4">
+                    <Database className="text-emerald-400" size={24} />
+                  </div>
+                  <h3 className="text-xl font-bold text-white">Backend Development</h3>
+                </div>
+                <ul className="space-y-3 text-gray-300">
+                  <li className="flex items-center">
+                    <span className="text-emerald-400 mr-2">•</span>
+                    Node.js / Express
+                  </li>
+                  <li className="flex items-center">
+                    <span className="text-emerald-400 mr-2">•</span>
+                    MongoDB / Mongoose
+                  </li>
+                  <li className="flex items-center">
+                    <span className="text-emerald-400 mr-2">•</span>
+                    REST API Design
+                  </li>
+                  <li className="flex items-center">
+                    <span className="text-emerald-400 mr-2">•</span>
+                    GraphQL
+                  </li>
+                  <li className="flex items-center">
+                    <span className="text-emerald-400 mr-2">•</span>
+                    Authentication & Authorization
+                  </li>
+                </ul>
+              </div>
+
+              {/* Other Skills */}
+              <div className="bg-gray-800/70 p-6 rounded-xl hover:shadow-glow transition-shadow">
+                <div className="flex items-center mb-6">
+                  <div className="p-3 bg-purple-500/20 rounded-full mr-4">
+                    <Terminal className="text-purple-400" size={24} />
+                  </div>
+                  <h3 className="text-xl font-bold text-white">Other Skills</h3>
+                </div>
+                <ul className="space-y-3 text-gray-300">
+                  <li className="flex items-center">
+                    <span className="text-purple-400 mr-2">•</span>
+                    Git / GitHub
+                  </li>
+                  <li className="flex items-center">
+                    <span className="text-purple-400 mr-2">•</span>
+                    CI/CD Pipelines
+                  </li>
+                  <li className="flex items-center">
+                    <span className="text-purple-400 mr-2">•</span>
+                    Docker
+                  </li>
+                  <li className="flex items-center">
+                    <span className="text-purple-400 mr-2">•</span>
+                    Jest / React Testing Library
+                  </li>
+                  <li className="flex items-center">
+                    <span className="text-purple-400 mr-2">•</span>
+                    AWS / Vercel Deployment
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section - Improved layout for mobile */}
       <section id="contact" className="py-20 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-background/0 via-background to-background/0" />
         <div className="container mx-auto px-6 relative">
           <h2 className="text-4xl font-bold text-gradient mb-16 text-center">Get in Touch</h2>
           <div className="max-w-4xl mx-auto">
             <div className="card p-8 rounded-2xl animate-scale-in opacity-0 hover:shadow-glow-lg" style={{ animationDelay: '0.2s' }}>
-              <div className="grid md:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
                 <a href="mailto:maazaltaf1027@gmail.com" className="contact-link group">
                   <div className="p-3 rounded-full bg-cyan-500/10 group-hover:bg-cyan-500/20 transition-colors">
                     <svg className="w-6 h-6 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -555,7 +532,7 @@ function App() {
                     <span className="text-gray-400">+92 322 3374424</span>
                   </div>
                 </a>
-                <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="contact-link group">
+                <a href="https://github.com/maazalirao" target="_blank" rel="noopener noreferrer" className="contact-link group">
                   <div className="p-3 rounded-full bg-purple-500/10 group-hover:bg-purple-500/20 transition-colors">
                     <svg className="w-6 h-6 text-purple-400" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
