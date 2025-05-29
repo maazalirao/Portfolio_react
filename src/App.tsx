@@ -4,6 +4,7 @@ import Navigation from './components/Navigation';
 // Lazy load components
 const ProjectCard = lazy(() => import('./components/ProjectCard'));
 const AgristoreCard = lazy(() => import('./components/AgristoreCard'));
+const EdgamifyCard = lazy(() => import('./components/EdgamifyCard'));
 // Cast the import to any to avoid type checking issues with memoized components
 const HeroSection = lazy(() => import('./components/HeroSection') as any);
 const TerminalIntro = lazy(() => import('./components/TerminalIntro'));
@@ -233,6 +234,14 @@ function App() {
     link: "https://fyp40.vercel.app"
   };
 
+  // Edgamify project data
+  const edgamifyProject = {
+    title: "Edgamify Learning Platform",
+    description: "A gamified educational platform that transforms learning through achievement systems, progress tracking, and skill certifications. Features include points & rewards, daily streaks, badges, leaderboards, and challenges.",
+    tech: ["React", "Next.js", "Tailwind CSS", "Gamification", "User Dashboard"],
+    link: "https://edgamify.vercel.app"
+  };
+
   // Memoized toggle theme handler
   const toggleTheme = useCallback(() => {
     setIsLightMode(prev => !prev);
@@ -307,7 +316,7 @@ function App() {
                         </li>
                         <li className="flex items-start list-item" style={{ transitionDelay: '200ms' }}>
                           <span className="text-cyan-400 mr-2">•</span>
-                          Developed cross-platform mobile apps using React Native
+                          Developed AI-powered SaaS solutions using the MERN stack
                         </li>
                         <li className="flex items-start list-item" style={{ transitionDelay: '300ms' }}>
                           <span className="text-cyan-400 mr-2">•</span>
@@ -355,7 +364,25 @@ function App() {
         <div className="container mx-auto px-6 relative">
           <h2 className="text-4xl font-bold text-gradient mb-16 text-center">My Projects</h2>
           
-          {/* Featured Agristore Project */}
+          {/* Featured Edgamify Project */}
+          <div className="max-w-6xl mx-auto mb-16">
+            <div className="project-feature-wrapper">
+              <Suspense fallback={
+                <div className="h-[260px] sm:h-[400px] bg-gray-800/50 rounded-xl flex items-center justify-center">
+                  <div className="w-8 h-8 border-2 border-purple-400 border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              }>
+                <EdgamifyCard 
+                  title={edgamifyProject.title}
+                  description={edgamifyProject.description}
+                  tech={edgamifyProject.tech}
+                  link={edgamifyProject.link}
+                />
+              </Suspense>
+            </div>
+          </div>
+
+          {/* AgriStore Project */}
           <div className="max-w-6xl mx-auto mb-16">
             <div className="project-feature-wrapper">
               <Suspense fallback={
@@ -429,6 +456,10 @@ function App() {
                   </li>
                   <li className="flex items-center">
                     <span className="text-cyan-400 mr-2">•</span>
+                    SaaS UI Architecture
+                  </li>
+                  <li className="flex items-center">
+                    <span className="text-cyan-400 mr-2">•</span>
                     Responsive Design
                   </li>
                 </ul>
@@ -443,6 +474,10 @@ function App() {
                   <h3 className="text-xl font-bold text-white">Backend Development</h3>
                 </div>
                 <ul className="space-y-3 text-gray-300">
+                  <li className="flex items-center">
+                    <span className="text-emerald-400 mr-2">•</span>
+                    MERN Stack Expert
+                  </li>
                   <li className="flex items-center">
                     <span className="text-emerald-400 mr-2">•</span>
                     Node.js / Express
@@ -472,9 +507,13 @@ function App() {
                   <div className="p-3 bg-purple-500/20 rounded-full mr-4">
                     <Terminal className="text-purple-400" size={24} />
                   </div>
-                  <h3 className="text-xl font-bold text-white">Other Skills</h3>
+                  <h3 className="text-xl font-bold text-white">AI & DevOps</h3>
                 </div>
                 <ul className="space-y-3 text-gray-300">
+                  <li className="flex items-center">
+                    <span className="text-purple-400 mr-2">•</span>
+                    AI Application Development
+                  </li>
                   <li className="flex items-center">
                     <span className="text-purple-400 mr-2">•</span>
                     Git / GitHub

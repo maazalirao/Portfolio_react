@@ -235,7 +235,7 @@ const HeroSection: React.FC = () => {
               <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold mb-3 sm:mb-6 leading-tight">
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-300">Maaz Ali Rao</span>
                 <span className="block text-lg sm:text-2xl md:text-3xl font-light mt-2 sm:mt-3 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
-                  Full Stack Web & Mobile App Developer
+                  AI & SaaS Full Stack Developer
                 </span>
               </h1>
             </div>
@@ -278,8 +278,8 @@ const HeroSection: React.FC = () => {
             {/* Description */}
             <div className="animate-fade-in-up opacity-0" style={{ animationDelay: '0.4s' }}>
               <p className="text-sm sm:text-lg text-gray-300 mb-5 sm:mb-8 leading-relaxed">
-                Passionate developer crafting exceptional digital experiences through modern web and mobile technologies. 
-                Specialized in building scalable applications with React, Node.js, and React Native.
+                Passionate developer crafting exceptional digital experiences through modern web technologies. 
+                Specialized in building AI-powered SaaS applications with React, Node.js, and the MERN stack.
               </p>
             </div>
 
@@ -395,7 +395,7 @@ const HeroSection: React.FC = () => {
 
                 <div className="skill-item">
                   <div className="flex justify-between mb-1">
-                    <span className="text-xs sm:text-base text-gray-300">Mobile App Development</span>
+                    <span className="text-xs sm:text-base text-gray-300">AI Application Development</span>
                     <span className="text-xs sm:text-base text-pink-400 font-medium">90%</span>
                   </div>
                   <div className="w-full h-1 sm:h-2 bg-gray-800 rounded-full overflow-hidden">

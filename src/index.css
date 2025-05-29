@@ -167,6 +167,10 @@ html {
   box-shadow: 0 0 20px rgba(96, 165, 250, 0.4);
 }
 
+.shadow-glow-sm {
+  box-shadow: 0 0 10px rgba(96, 165, 250, 0.2);
+}
+
 /* Shadow glow effect for active indicators */
 .shadow-glow {
   box-shadow: 0 0 15px rgba(96, 165, 250, 0.3);
@@ -535,4 +539,29 @@ body {
 .backdrop-blur-md {
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
+}
+
+/* Improved text readability */
+.text-gray-200 {
+  color: rgba(229, 231, 235, 0.95);
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+}
+
+.text-gray-300 {
+  color: rgba(209, 213, 219, 0.95);
+}
+
+.text-gray-400 {
+  color: rgba(156, 163, 175, 0.95);
+}
+
+/* Enhance contrast for technology tags */
+.bg-gray-800\/80 {
+  background-color: rgba(31, 41, 55, 0.85);
+}
+
+/* Improve hover state visibility */
+.hover\:shadow-glow:hover {
+  box-shadow: 0 0 20px rgba(96, 165, 250, 0.4);
 }

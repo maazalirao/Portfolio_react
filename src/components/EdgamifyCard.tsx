@@ -1,23 +1,25 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Github, ExternalLink, ChevronLeft, ChevronRight, ShoppingBag, BarChart, Calendar } from 'lucide-react';
+import { Github, ExternalLink, ChevronLeft, ChevronRight, Award, Users, Clock } from 'lucide-react';
 
 // Import multiple images
-import image1 from '../assets/pest1.png';
-import image2 from '../assets/pest2.png';
-import image3 from '../assets/pest3.png';
-import image4 from '../assets/pest4.png';
-import image5 from '../assets/pest5.png';
-import image6 from '../assets/pest6.png';
-import image7 from '../assets/pest7.png';
+import image1 from '../assets/Edgamify/1.png';
+import image2 from '../assets/Edgamify/2.png';
+import image3 from '../assets/Edgamify/3.png';
+import image4 from '../assets/Edgamify/4.png';
+import image5 from '../assets/Edgamify/5.png';
+import image6 from '../assets/Edgamify/6.png';
+import image7 from '../assets/Edgamify/7.png';
+import image8 from '../assets/Edgamify/8.png';
+import achievementGallery from '../assets/Edgamify/achievment-gallery.png';
 
-interface AgristoreCardProps {
+interface EdgamifyCardProps {
   title: string;
   description: string;
   tech: string[];
   link: string;
 }
 
-const AgristoreCard: React.FC<AgristoreCardProps> = ({ 
+const EdgamifyCard: React.FC<EdgamifyCardProps> = ({ 
   title, 
   description, 
   tech, 
@@ -30,7 +32,7 @@ const AgristoreCard: React.FC<AgristoreCardProps> = ({
   const cardRef = useRef<HTMLDivElement>(null);
 
   // Image array
-  const images = [image1, image2, image3, image4, image5, image6, image7];
+  const images = [image1, image2, image3, image4, image5, image6, image7, image8, achievementGallery];
 
   // Check if element is in viewport
   useEffect(() => {
@@ -104,15 +106,15 @@ const AgristoreCard: React.FC<AgristoreCardProps> = ({
       {/* Project title - now above the image for better visibility */}
       <div className="p-6 border-b border-gray-800">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-cyan-500/20">
-            <ShoppingBag className="text-cyan-400" size={24} />
+          <div className="p-2 rounded-lg bg-purple-500/20">
+            <Award className="text-purple-400" size={24} />
           </div>
           <div>
             <h3 className="text-2xl font-bold text-white">{title}</h3>
             <div className="flex items-center mt-1 text-gray-400 text-sm">
-              <BarChart size={14} className="mr-1" /> Inventory Analytics
+              <Users size={14} className="mr-1" /> 10,000+ Students
               <span className="mx-2">•</span>
-              <Calendar size={14} className="mr-1" /> Real-time Tracking
+              <Clock size={14} className="mr-1" /> Gamified Learning
             </div>
           </div>
         </div>
@@ -125,15 +127,15 @@ const AgristoreCard: React.FC<AgristoreCardProps> = ({
       >
         {/* Loading spinner */}
         {!imageLoaded && !imageError && currentImageIndex === 0 && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-cyan-900/50 to-blue-900/50 backdrop-blur-sm z-10">
-            <div className="w-12 h-12 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin mb-4"></div>
-            <p className="text-cyan-300 font-medium">Loading image...</p>
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-purple-900/50 to-indigo-900/50 backdrop-blur-sm z-10">
+            <div className="w-12 h-12 border-4 border-purple-400 border-t-transparent rounded-full animate-spin mb-4"></div>
+            <p className="text-purple-300 font-medium">Loading image...</p>
           </div>
         )}
 
         {/* Fallback background if image fails */}
         {imageError && (
-          <div className="absolute inset-0 bg-gradient-to-br from-cyan-900/50 via-blue-900/70 to-gray-900"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-900/50 via-indigo-900/70 to-gray-900"></div>
         )}
         
         {/* Glass overlay for image */}
@@ -158,7 +160,7 @@ const AgristoreCard: React.FC<AgristoreCardProps> = ({
         <div className="absolute inset-y-0 left-0 flex items-center z-20">
           <button 
             onClick={prevImage}
-            className="bg-black/40 text-white p-2 rounded-r-lg hover:bg-cyan-600/60 transition-colors ml-2 backdrop-blur-sm"
+            className="bg-black/40 text-white p-2 rounded-r-lg hover:bg-purple-600/60 transition-colors ml-2 backdrop-blur-sm"
             aria-label="Previous image"
           >
             <ChevronLeft size={24} />
@@ -168,7 +170,7 @@ const AgristoreCard: React.FC<AgristoreCardProps> = ({
         <div className="absolute inset-y-0 right-0 flex items-center z-20">
           <button 
             onClick={nextImage}
-            className="bg-black/40 text-white p-2 rounded-l-lg hover:bg-cyan-600/60 transition-colors mr-2 backdrop-blur-sm"
+            className="bg-black/40 text-white p-2 rounded-l-lg hover:bg-purple-600/60 transition-colors mr-2 backdrop-blur-sm"
             aria-label="Next image"
           >
             <ChevronRight size={24} />
@@ -187,7 +189,7 @@ const AgristoreCard: React.FC<AgristoreCardProps> = ({
               }}
               className={`h-2 rounded-full transition-all duration-300 focus:outline-none ${
                 currentImageIndex === index 
-                  ? 'bg-cyan-500 w-6 shadow-glow-sm' 
+                  ? 'bg-purple-500 w-6 shadow-glow-sm' 
                   : 'bg-white/50 hover:bg-white/80 w-2'
               }`}
               aria-label={`Go to image ${index + 1}`}
@@ -195,10 +197,10 @@ const AgristoreCard: React.FC<AgristoreCardProps> = ({
           ))}
         </div>
         
-        {/* Badge */}
+        {/* Badge - now with more eye-catching design */}
         <div className="absolute top-4 right-4 z-30">
-          <div className="bg-gradient-to-r from-cyan-500 to-blue-500 px-3 py-1 rounded-full text-xs font-medium text-white shadow-glow-sm flex items-center">
-            <span className="animate-pulse mr-1">•</span> Featured Project
+          <div className="bg-gradient-to-r from-purple-500 to-pink-500 px-3 py-1 rounded-full text-xs font-medium text-white shadow-glow-sm flex items-center">
+            <span className="animate-pulse mr-1">•</span> Latest Project
           </div>
         </div>
 
@@ -218,30 +220,30 @@ const AgristoreCard: React.FC<AgristoreCardProps> = ({
           {/* Key features with icons */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
             <div className="flex items-start">
+              <div className="p-2 rounded-lg bg-purple-500/10 mr-3">
+                <Award className="text-purple-400" size={16} />
+              </div>
+              <div>
+                <h4 className="text-sm font-semibold text-white">Achievement System</h4>
+                <p className="text-xs text-gray-400">Earn badges & rewards</p>
+              </div>
+            </div>
+            <div className="flex items-start">
               <div className="p-2 rounded-lg bg-cyan-500/10 mr-3">
-                <ShoppingBag className="text-cyan-400" size={16} />
+                <Users className="text-cyan-400" size={16} />
               </div>
               <div>
-                <h4 className="text-sm font-semibold text-white">Inventory Management</h4>
-                <p className="text-xs text-gray-400">Track stock levels</p>
+                <h4 className="text-sm font-semibold text-white">Progress Tracking</h4>
+                <p className="text-xs text-gray-400">Monitor your journey</p>
               </div>
             </div>
             <div className="flex items-start">
-              <div className="p-2 rounded-lg bg-blue-500/10 mr-3">
-                <BarChart className="text-blue-400" size={16} />
+              <div className="p-2 rounded-lg bg-pink-500/10 mr-3">
+                <Clock className="text-pink-400" size={16} />
               </div>
               <div>
-                <h4 className="text-sm font-semibold text-white">Analytics Dashboard</h4>
-                <p className="text-xs text-gray-400">Performance insights</p>
-              </div>
-            </div>
-            <div className="flex items-start">
-              <div className="p-2 rounded-lg bg-teal-500/10 mr-3">
-                <Calendar className="text-teal-400" size={16} />
-              </div>
-              <div>
-                <h4 className="text-sm font-semibold text-white">Schedule Management</h4>
-                <p className="text-xs text-gray-400">Plan deliveries & orders</p>
+                <h4 className="text-sm font-semibold text-white">Skill Certification</h4>
+                <p className="text-xs text-gray-400">Validate your learning</p>
               </div>
             </div>
           </div>
@@ -254,7 +256,7 @@ const AgristoreCard: React.FC<AgristoreCardProps> = ({
             {tech.map((item, i) => (
               <span 
                 key={i} 
-                className="bg-gray-800/80 px-3 py-1 rounded-full text-xs text-white whitespace-nowrap border border-gray-700 hover:border-cyan-500/50 transition-colors"
+                className="bg-gray-800/80 px-3 py-1 rounded-full text-xs text-white whitespace-nowrap border border-gray-700 hover:border-purple-500/50 transition-colors"
               >
                 {item}
               </span>
@@ -271,7 +273,7 @@ const AgristoreCard: React.FC<AgristoreCardProps> = ({
             onClick={(e) => {
               e.stopPropagation();
             }}
-            className="flex-1 bg-gradient-to-r from-cyan-600 to-blue-600 text-white px-4 py-3 rounded-lg flex items-center justify-center gap-2 hover:from-cyan-500 hover:to-blue-500 transition-colors shadow-glow-sm font-medium"
+            className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-3 rounded-lg flex items-center justify-center gap-2 hover:from-purple-500 hover:to-pink-500 transition-colors shadow-glow-sm font-medium"
           >
             <span>Explore Project</span>
             <ExternalLink size={16} />
@@ -293,4 +295,4 @@ const AgristoreCard: React.FC<AgristoreCardProps> = ({
   );
 };
 
-export default AgristoreCard; 
+export default EdgamifyCard; 
