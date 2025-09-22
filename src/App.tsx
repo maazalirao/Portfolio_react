@@ -224,6 +224,7 @@ function App() {
       image: tiktakImage,
       color: "from-cyan-400 to-blue-500"
     }
+    
   ], []);
 
   // Agristore project data
