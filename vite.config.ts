@@ -33,8 +33,6 @@ export default defineConfig({
     include: [
       'react',
       'react-dom',
-      '@react-three/fiber',
-      '@react-three/drei',
       'lucide-react'
     ]
   },

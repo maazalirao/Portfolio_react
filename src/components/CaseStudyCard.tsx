@@ -1,50 +1,49 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ChevronLeft, ChevronRight, ArrowUpRight, Award, Target, Users } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ArrowUpRight } from 'lucide-react';
 
-import image1 from '../assets/Edgamify/1.png';
-import image2 from '../assets/Edgamify/2.png';
-import image3 from '../assets/Edgamify/3.png';
-import image4 from '../assets/Edgamify/4.png';
-import image5 from '../assets/Edgamify/5.png';
-import image6 from '../assets/Edgamify/6.png';
-import image7 from '../assets/Edgamify/7.png';
-import image8 from '../assets/Edgamify/8.png';
-import achievementGallery from '../assets/Edgamify/achievment-gallery.png';
-
-interface EdgamifyCardProps {
+interface CaseStudyCardProps {
   title: string;
-  description: string;
+  tagline: string;
+  role: string;
+  description: string[];
   tech: string[];
-  link: string;
+  images: string[];
+  urlLabel: string;
+  status?: string;
+  link?: string;
+  reverse?: boolean;
 }
 
-const features = [
-  { icon: Award, title: 'Achievements', sub: 'Badges & rewards' },
-  { icon: Target, title: 'Streaks', sub: 'Daily habit loop' },
-  { icon: Users, title: 'Leaderboards', sub: 'Compete & rank' },
-];
-
-const EdgamifyCard: React.FC<EdgamifyCardProps> = ({ title, description, tech, link }) => {
-  const images = [image1, image2, image3, image4, image5, image6, image7, image8, achievementGallery];
+const CaseStudyCard: React.FC<CaseStudyCardProps> = ({
+  title,
+  tagline,
+  role,
+  description,
+  tech,
+  images,
+  urlLabel,
+  status,
+  link,
+  reverse,
+}) => {
   const [current, setCurrent] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => setIsVisible(entry.isIntersecting), {
+    const ob = new IntersectionObserver(([entry]) => setIsVisible(entry.isIntersecting), {
       threshold: 0.1,
     });
-    if (cardRef.current) observer.observe(cardRef.current);
-    return () => observer.disconnect();
+    if (cardRef.current) ob.observe(cardRef.current);
+    return () => ob.disconnect();
   }, []);
 
   useEffect(() => {
-    if (!isVisible) return;
-    const timer = setInterval(() => setCurrent((i) => (i + 1) % images.length), 3500);
-    return () => clearInterval(timer);
+    if (!isVisible || images.length < 2) return;
+    const t = setInterval(() => setCurrent((i) => (i + 1) % images.length), 3500);
+    return () => clearInterval(t);
   }, [isVisible, images.length]);
 
-  const open = () => window.open(link, '_blank', 'noopener,noreferrer');
   const prev = (e: React.MouseEvent) => {
     e.stopPropagation();
     setCurrent((i) => (i === 0 ? images.length - 1 : i - 1));
@@ -53,20 +52,25 @@ const EdgamifyCard: React.FC<EdgamifyCardProps> = ({ title, description, tech, l
     e.stopPropagation();
     setCurrent((i) => (i + 1) % images.length);
   };
+  const open = () => {
+    if (link) window.open(link, '_blank', 'noopener,noreferrer');
+  };
 
   return (
     <div ref={cardRef} className="group card card-hover overflow-hidden">
       <div className="grid lg:grid-cols-2">
-        {/* Slideshow */}
-        <div className="relative bg-bg-subtle order-1">
+        {/* Media */}
+        <div className={`relative bg-bg-subtle ${reverse ? 'lg:order-2' : 'lg:order-1'}`}>
           <div className="browser-bar">
             <span className="browser-dot bg-[#ff5f57]" />
             <span className="browser-dot bg-[#febc2e]" />
             <span className="browser-dot bg-[#28c840]" />
-            <span className="ml-3 font-mono text-xs text-ink-faint">edgamify.vercel.app</span>
+            <span className="ml-3 font-mono text-xs text-ink-faint truncate">{urlLabel}</span>
           </div>
           <div
-            className="relative overflow-hidden h-[280px] sm:h-[360px] lg:h-full lg:min-h-[440px] cursor-pointer"
+            className={`relative overflow-hidden h-[280px] sm:h-[380px] lg:h-full lg:min-h-[460px] ${
+              link ? 'cursor-pointer' : ''
+            }`}
             onClick={open}
           >
             <img
@@ -76,9 +80,11 @@ const EdgamifyCard: React.FC<EdgamifyCardProps> = ({ title, description, tech, l
               className="w-full h-full object-contain animate-fade-in"
               loading="lazy"
             />
-            <span className="absolute top-3 right-3 inline-flex items-center gap-1.5 rounded-full bg-bg/80 backdrop-blur px-2.5 py-1 text-xs font-mono text-accent border border-line">
-              <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" /> Live
-            </span>
+            {status && (
+              <span className="absolute top-3 right-3 inline-flex items-center gap-1.5 rounded-full bg-bg/80 backdrop-blur px-2.5 py-1 text-xs font-mono text-accent border border-line">
+                <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" /> {status}
+              </span>
+            )}
 
             <button
               onClick={prev}
@@ -114,18 +120,14 @@ const EdgamifyCard: React.FC<EdgamifyCardProps> = ({ title, description, tech, l
         </div>
 
         {/* Content */}
-        <div className="flex flex-col p-6 sm:p-8 order-2">
-          <span className="eyebrow">Featured · Gamified learning</span>
+        <div className={`flex flex-col p-6 sm:p-8 ${reverse ? 'lg:order-1' : 'lg:order-2'}`}>
+          <span className="eyebrow">{role}</span>
           <h3 className="font-display text-2xl font-bold text-ink mt-4">{title}</h3>
-          <p className="mt-3 text-ink-muted leading-relaxed">{description}</p>
+          <p className="text-accent text-sm font-medium mt-1">{tagline}</p>
 
-          <div className="grid grid-cols-3 gap-3 mt-6">
-            {features.map(({ icon: Icon, title: t, sub }) => (
-              <div key={t} className="rounded-lg border border-line bg-bg-subtle p-3">
-                <Icon className="text-accent mb-2" size={18} />
-                <div className="text-sm font-semibold text-ink leading-tight">{t}</div>
-                <div className="text-xs text-ink-faint">{sub}</div>
-              </div>
+          <div className="mt-4 space-y-3 text-ink-muted leading-relaxed text-[0.95rem]">
+            {description.map((p, i) => (
+              <p key={i}>{p}</p>
             ))}
           </div>
 
@@ -138,9 +140,15 @@ const EdgamifyCard: React.FC<EdgamifyCardProps> = ({ title, description, tech, l
           </div>
 
           <div className="mt-7">
-            <a href={link} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
-              Explore live <ArrowUpRight size={17} />
-            </a>
+            {link ? (
+              <a href={link} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
+                Explore live <ArrowUpRight size={17} />
+              </a>
+            ) : status ? (
+              <span className="inline-flex items-center gap-2 rounded-lg border border-line px-4 py-2 text-sm text-ink-muted">
+                <span className="h-1.5 w-1.5 rounded-full bg-accent" /> {status}
+              </span>
+            ) : null}
           </div>
         </div>
       </div>
@@ -148,4 +156,4 @@ const EdgamifyCard: React.FC<EdgamifyCardProps> = ({ title, description, tech, l
   );
 };
 
-export default EdgamifyCard;
+export default CaseStudyCard;
