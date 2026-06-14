@@ -399,12 +399,12 @@ function App() {
           <div className="space-y-8 mb-8">
             <div className="reveal">
               <Suspense fallback={<div className="h-[440px] card animate-pulse" />}>
-                <CaseStudyCard {...aestheticsProject} images={aestheticsImages} />
+                <CaseStudyCard {...noavantProject} images={noavantImages} />
               </Suspense>
             </div>
             <div className="reveal">
               <Suspense fallback={<div className="h-[440px] card animate-pulse" />}>
-                <CaseStudyCard {...noavantProject} images={noavantImages} reverse />
+                <CaseStudyCard {...aestheticsProject} images={aestheticsImages} reverse />
               </Suspense>
             </div>
             <div className="reveal">
