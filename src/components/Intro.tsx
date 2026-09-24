@@ -28,7 +28,7 @@ export function Intro() {
         {[
           { label: 'Based in', value: site.location },
           { label: 'Working with', value: site.regions.join(', ') },
-          { label: 'Timezone', value: `${site.timezoneLabel} · remote-first` },
+          { label: 'Timezone', value: site.timezoneLabel },
         ].map((item, i) => (
           <div key={item.label} className={`col-span-12 border-t border-line pt-4 sm:col-span-4 md:col-span-3 ${i === 0 ? 'md:col-start-4' : ''}`}>
             <dt className="label">{item.label}</dt>

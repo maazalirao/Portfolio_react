@@ -46,9 +46,9 @@ export function Contact() {
             </div>
           ))}
           <div className="border-t border-line py-5">
-            <dt className="label">Availability</dt>
+            <dt className="label">Based in</dt>
             <dd className="mt-2">
-              Remote · {site.location}
+              {site.location}
               <LocalTime className="block text-muted tabular-nums" />
             </dd>
           </div>

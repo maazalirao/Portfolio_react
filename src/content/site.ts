@@ -81,14 +81,24 @@ export const site = {
   statement:
     'I build software that solves real-life problems. Since 2021 I have shipped products end to end: a multi-tenant platform running aesthetic clinics across Australia, an invite-only fashion network in the UK, and AI assistants that only answer from what each role is cleared to see.',
   regions: ['Australia', 'United Kingdom', 'United States', 'Germany'],
-  availability: 'Available for remote work',
+  availability: 'Available for work',
   location: 'Multan, Pakistan',
+  city: 'Multan',
   timezone: 'Asia/Karachi',
   timezoneLabel: 'UTC+5',
   email: 'dev.maazali@gmail.com',
   links: {
     linkedin: 'https://www.linkedin.com/in/maazalirao',
     github: 'https://github.com/maazalirao',
+  },
+  /**
+   * Hero portrait: a transparent cutout, pre-sized as /public/portrait/mobile-<width>.webp and served as-is
+   * (the image optimiser's AVIF smooths away hair and skin texture). Large on phones, a small circle from md.
+   */
+  portrait: {
+    src: '/portrait/mobile',
+    widths: [480, 720, 960, 1254],
+    alt: 'Portrait of Maaz Ali',
   },
 }
 
@@ -163,7 +173,6 @@ export const projects: Project[] = [
     stack: ['React', 'NestJS', 'MySQL', 'Multi-tenant architecture', 'Role-based access'],
     live: 'https://aestheticsconsults.com.au',
     color: '#0a5aa6',
-    stage: '#57311f',
     showcaseFrom: 2,
     images: [
       { src: '/work/aesthetics-consultants/01-staff-roster.webp', alt: 'Staff roster: weekly shift assignments per clinic', zoom: 1.3 },

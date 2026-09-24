@@ -45,6 +45,10 @@ Per-project options:
 - `showcaseFrom`: the image the featured slideshow and case study start from (the hero strip always uses the first image)
 - `offline`: hides outbound links while a live site is down
 
+### Hero portrait
+
+A transparent cutout in `public/portrait/`, pre-sized as `mobile-<width>.webp` at 480, 720, 960 and 1254px and served as-is, because the image optimiser's AVIF softens hair and skin. Phones show it large on a studio backdrop; from 768px wide it is a small circle beside the intro. Replace all four sizes when you change the photo.
+
 ## Domain and SEO
 
 Set `NEXT_PUBLIC_SITE_URL` in Vercel (for example `https://yourdomain.com`). Metadata, Open Graph images, `sitemap.xml` and `robots.txt` all follow it. It defaults to `https://maazport.vercel.app`.

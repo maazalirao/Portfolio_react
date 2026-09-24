@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { site } from '@/content/site'
+import { HeroPortrait } from './HeroPortrait'
 import { WorkStrip } from './WorkStrip'
 
 type Vars = React.CSSProperties & Record<`--${string}`, string | number>
@@ -37,27 +38,34 @@ export function Hero() {
           </span>
         </div>
 
-        <h1 id="hero-title" className="display mt-[12vh] max-w-[13.5em] text-[clamp(2.6rem,6.3vw,6.4rem)] text-balance md:mt-[10vh]">
-          <RisingWords text={lead} start={0} /> <RisingWords text={emphasis} start={leadCount} className="serif-accent" />{' '}
-          <RisingWords text={tail} start={leadCount + emphasisCount} />
-        </h1>
+        <div className="hero-grid mt-[7vh] md:mt-[8vh]">
+          <h1
+            id="hero-title"
+            className="hero-title display max-w-[13.5em] text-[clamp(2.6rem,6.3vw,6.4rem)] text-balance lg:text-[clamp(3.25rem,5.4vw,5.75rem)]"
+          >
+            <RisingWords text={lead} start={0} /> <RisingWords text={emphasis} start={leadCount} className="serif-accent" />{' '}
+            <RisingWords text={tail} start={leadCount + emphasisCount} />
+          </h1>
 
-        <div
-          className="fade-in mt-10 flex flex-col gap-8 md:mt-12 md:flex-row md:items-end md:justify-between"
-          style={{ '--d': '650ms' } as Vars}
-        >
-          <p className="max-w-md text-lg leading-snug text-muted">{site.intro}</p>
-          <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
-            <Link
-              href="/#work"
-              className="group inline-flex items-center gap-3 rounded-full bg-ink px-6 py-3.5 text-sm font-medium text-paper transition-transform duration-300 hover:scale-[1.03]"
-            >
-              View work <span aria-hidden className="arrow">↓</span>
-            </Link>
-            <Link href="/#contact" className="group inline-flex items-center gap-2 text-sm font-medium">
-              <span className="link-line link-line-static">Get in touch</span>
-              <span aria-hidden className="arrow">→</span>
-            </Link>
+          <HeroPortrait className="hero-portrait" />
+
+          <div
+            className="hero-foot fade-in flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between"
+            style={{ '--d': '650ms' } as Vars}
+          >
+            <p className="max-w-md text-lg leading-snug text-muted">{site.intro}</p>
+            <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
+              <Link
+                href="/#work"
+                className="group inline-flex items-center gap-3 rounded-full bg-ink px-6 py-3.5 text-sm font-medium text-paper transition-transform duration-300 hover:scale-[1.03]"
+              >
+                View work <span aria-hidden className="arrow">↓</span>
+              </Link>
+              <Link href="/#contact" className="group inline-flex items-center gap-2 text-sm font-medium">
+                <span className="link-line link-line-static">Get in touch</span>
+                <span aria-hidden className="arrow">→</span>
+              </Link>
+            </div>
           </div>
         </div>
       </div>

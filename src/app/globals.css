@@ -449,6 +449,198 @@
   }
 }
 
+/* Hero layout. Phones: headline, portrait, intro. From md: the headline, then a small round portrait beside the intro. */
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    'title'
+    'portrait'
+    'foot';
+  row-gap: 2.5rem;
+}
+.hero-title {
+  grid-area: title;
+}
+.hero-portrait {
+  grid-area: portrait;
+}
+.hero-foot {
+  grid-area: foot;
+}
+@media (min-width: 768px) {
+  .hero-grid {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      'title title'
+      'portrait foot';
+    column-gap: 1.5rem;
+    row-gap: 3rem;
+  }
+  .hero-portrait {
+    align-self: start;
+  }
+}
+@media (min-width: 1024px) {
+  .hero-grid {
+    column-gap: 1.75rem;
+  }
+  .hero-portrait {
+    align-self: center;
+  }
+}
+
+/*
+ * Hero portrait: a cutout on a studio backdrop. Phones: a bust on a wide backdrop, the top of the head
+ * breaking out over its edge. From md: a small circle beside the intro, the head inside it.
+ * Animations fill backwards only, so the photo is never left on a transformed layer (stays sharp).
+ */
+.portrait {
+  --pop: 24%; /* share of the frame above the backdrop */
+  --img-w: 80%; /* cutout width, relative to the frame */
+  --radius: 12px;
+  --stage-top: #e9e5dd;
+  --stage-bottom: #d8d3c9;
+  --stage-light: rgb(255 255 255 / 0.65);
+  --stage-edge: rgb(20 20 18 / 0.07);
+  margin: 0;
+}
+.portrait-frame {
+  position: relative;
+  isolation: isolate;
+  aspect-ratio: 1.55;
+  container-type: inline-size;
+}
+.portrait-stage {
+  position: absolute;
+  inset: var(--pop) 0 0;
+  border-radius: var(--radius);
+  background:
+    radial-gradient(55% 75% at 50% 30%, var(--stage-light), transparent 75%),
+    linear-gradient(180deg, var(--stage-top), var(--stage-bottom));
+  box-shadow: inset 0 0 0 1px var(--stage-edge);
+  animation: portrait-stage-in 1s var(--ease-out) 0.1s backwards;
+}
+/* A warm key light fades up on hover. Only the backdrop changes; the photo never moves. */
+.portrait-stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(55% 75% at 50% 30%, color-mix(in oklab, var(--accent) 30%, transparent), transparent 75%);
+  opacity: 0;
+  transition: opacity 0.9s var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .portrait:hover .portrait-stage::after {
+    opacity: 1;
+  }
+}
+/* Clips the cutout to the backdrop's sides and bottom; the head is free above it. */
+.portrait-media {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 0 0 var(--radius) var(--radius);
+}
+.portrait-img {
+  position: absolute;
+  top: 0;
+  left: calc((100% - var(--img-w)) / 2);
+  width: var(--img-w);
+  max-width: none;
+  height: auto;
+  animation: portrait-rise 1.2s var(--ease-out) 0.2s backwards;
+}
+.portrait-glow {
+  display: none;
+}
+.portrait-caption {
+  position: absolute;
+  inset: var(--pop) 0 auto;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1rem;
+  pointer-events: none;
+  animation: fade 0.8s var(--ease-out) 0.8s backwards;
+}
+/* The head takes the middle third of the backdrop; below this width the labels would run into it. */
+@container (max-width: 300px) {
+  .portrait-caption {
+    display: none;
+  }
+}
+@keyframes portrait-stage-in {
+  from {
+    opacity: 0;
+    transform: translateY(4%);
+  }
+}
+@keyframes portrait-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10%);
+  }
+  40% {
+    opacity: 1;
+  }
+}
+@media (max-width: 767px) {
+  .hero-portrait {
+    max-width: 30rem;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  .portrait {
+    --stage-top: #23221f;
+    --stage-bottom: #161614;
+    --stage-light: rgb(255 255 255 / 0.08);
+    --stage-edge: rgb(255 255 255 / 0.07);
+  }
+  /* Faint light behind the head, so dark hair still separates from the dark page above the backdrop. */
+  .portrait-glow {
+    display: block;
+    position: absolute;
+    z-index: -1;
+    top: -6%;
+    left: 20%;
+    width: 60%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgb(255 255 255 / 0.07), transparent);
+  }
+}
+/* The circle clips the head, so nothing breaks out: no caption or glow, and the backdrop only fades in. */
+@media (min-width: 768px) {
+  .portrait {
+    --pop: 0%;
+    --img-w: 115%;
+    --radius: 50%;
+    width: 5.5rem;
+  }
+  .portrait-frame {
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: 50%;
+  }
+  .portrait-stage {
+    animation-name: fade;
+  }
+  .portrait-img {
+    top: 4%;
+  }
+  .portrait-caption,
+  .portrait-glow {
+    display: none;
+  }
+}
+@media (min-width: 1024px) {
+  .portrait {
+    width: 6.5rem;
+  }
+}
+
 /* Project stage: brand colour, title, and the product peeking in from the corner. */
 .stage {
   position: relative;
