@@ -40,7 +40,7 @@ export type Project = {
   live?: string
   /** Brand colour sampled from the project's own UI. Used for stage backgrounds. */
   color: string
-  /** The live site is down: outbound links are hidden, the domain still shows in browser frames. */
+  /** The live site is down: outbound links are hidden. */
   offline?: boolean
   /** Optional stage colour for the featured card and case study cover, when the brand colour clashes with the UI. */
   stage?: string

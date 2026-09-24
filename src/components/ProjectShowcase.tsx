@@ -77,7 +77,7 @@ export function FeaturedStage({ project, number, offset = 0 }: { project: Projec
             </div>
 
             <div className="cinema-front">
-              <BrowserFrame url={project.live}>
+              <BrowserFrame>
                 <Slides images={images} show={show} running={running} interval={interval} sizes="(min-width: 1024px) 64vw, 100vw" />
               </BrowserFrame>
               <SlideBars count={images.length} show={show} running={running} className="mt-3" />
@@ -109,7 +109,7 @@ export function PaperCard({ project, number, offset = 0 }: { project: Project; n
       <Link href={`/work/${project.slug}`} transitionTypes={['nav-forward']} className="group block">
         <ViewTransition name={`shot-${project.slug}`} share="morph" default="none">
           <div className="paper-stage" style={{ '--brand': project.color } as React.CSSProperties}>
-            <BrowserFrame url={project.live} className="paper-browser">
+            <BrowserFrame className="paper-browser">
               <Slides images={images} show={show} running={running} interval={interval} sizes="(min-width: 1024px) 26vw, (min-width: 640px) 40vw, 80vw" />
             </BrowserFrame>
           </div>

@@ -13,17 +13,16 @@ function sizeOf(src: string) {
 
 type ScreenProps = {
   image: Screenshot
-  url?: string
   sizes: string
   priority?: boolean
   className?: string
 }
 
 /** A full, uncropped screenshot inside a browser window. */
-export function Screen({ image, url, sizes, priority, className }: ScreenProps) {
+export function Screen({ image, sizes, priority, className }: ScreenProps) {
   const { width, height } = sizeOf(image.src)
   return (
-    <BrowserFrame url={url} className={`browser-natural ${className ?? ''}`}>
+    <BrowserFrame className={`browser-natural ${className ?? ''}`}>
       <Image
         src={image.src}
         alt={image.alt}

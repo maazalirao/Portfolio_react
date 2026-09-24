@@ -113,7 +113,7 @@ export default async function CaseStudy({ params }: PageProps<'/work/[slug]'>) {
           <div className="fade-in mt-10 md:mt-14" style={{ '--d': '160ms' } as Vars}>
             <ViewTransition name={`shot-${project.slug}`} share="morph" default="none">
               <div className="cover-stage" style={{ '--brand': project.color, ...(project.stage ? { '--stage': project.stage } : {}) } as Vars}>
-                <Screen image={cover} url={project.live} sizes="(min-width: 1408px) 1100px, 84vw" priority />
+                <Screen image={cover} sizes="(min-width: 1408px) 1100px, 84vw" priority />
               </div>
             </ViewTransition>
           </div>
@@ -184,7 +184,7 @@ export default async function CaseStudy({ params }: PageProps<'/work/[slug]'>) {
                 <Reveal as="article" key={image.src} className="cv" delay={0}>
                   <figure>
                     <div className={`screen-stage ${i % 2 ? 'screen-stage-right' : 'screen-stage-left'}`} style={{ '--brand': project.color } as Vars}>
-                      <Screen image={image} url={project.live} sizes="(min-width: 1408px) 1000px, 86vw" />
+                      <Screen image={image} sizes="(min-width: 1408px) 1000px, 86vw" />
                     </div>
                     <figcaption className="label mt-4 flex gap-4">
                       <span className="tabular-nums text-ink">{String(i + 2).padStart(2, '0')}</span>
@@ -209,7 +209,7 @@ export default async function CaseStudy({ params }: PageProps<'/work/[slug]'>) {
               <div className="col-span-12 lg:col-span-7">
                 <ViewTransition name={`shot-${next.slug}`} share="morph" default="none">
                   <div className="cover-stage cover-stage-sm" style={{ '--brand': next.color, ...(next.stage ? { '--stage': next.stage } : {}) } as Vars}>
-                    <Screen image={showcaseImages(next)[0]} url={next.live} sizes="(min-width: 1024px) 50vw, 84vw" />
+                    <Screen image={showcaseImages(next)[0]} sizes="(min-width: 1024px) 50vw, 84vw" />
                   </div>
                 </ViewTransition>
               </div>
