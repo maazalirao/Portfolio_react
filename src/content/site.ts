@@ -567,6 +567,11 @@ export const selectedProjects = projects.filter((p) => p.tier === 'selected')
 export const indexProjects = projects.filter((p) => p.tier === 'index')
 export const caseStudies = projects.filter((p) => p.caseStudy)
 
+/** The hero strip starts with these case studies, in this order; the rest follow in their usual order. */
+const stripOrder = ['teamly-qa', 'noavant', 'cadquest', 'aesthetics-consultants']
+const stripRank = (project: Project) => (stripOrder.includes(project.slug) ? stripOrder.indexOf(project.slug) : stripOrder.length)
+export const stripProjects = [...caseStudies].sort((a, b) => stripRank(a) - stripRank(b))
+
 /** Images in showcase order: rotated to start at `showcaseFrom`, without strip-only images. */
 export function showcaseImages(project: Project) {
   const from = project.showcaseFrom ?? 0

@@ -24,6 +24,7 @@ Everything on the site comes from one file: `src/content/site.ts`.
   - `selected`: the "Also built" row
   - `index`: the "More work" grid
 - `caseStudy: true` gives a project its own page at `/work/<slug>`.
+- `stripOrder`: the case studies the hero strip starts with; the rest follow in their usual order.
 - `experience`, `education`, `stack`: the timeline and stack sections.
 
 Only add facts that are true and verifiable. `outcomes` and `stats` are shown prominently.

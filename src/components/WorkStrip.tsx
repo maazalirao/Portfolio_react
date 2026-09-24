@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { caseStudies } from '@/content/site'
+import { stripProjects } from '@/content/site'
 import { textOn } from '@/lib/color'
 
 /**
@@ -20,7 +20,7 @@ export function WorkStrip() {
         <div className="marquee-track">
           {[0, 1].map((copy) => (
             <ul key={copy} className="marquee-list" aria-hidden={copy === 1 || undefined}>
-              {caseStudies.map((project, i) => (
+              {stripProjects.map((project, i) => (
                 <li key={project.slug} className="shrink-0">
                   <Link
                     href={`/work/${project.slug}`}
@@ -60,7 +60,7 @@ export function WorkStrip() {
         </div>
       </div>
       <div className="container-x mt-4 flex items-center justify-between">
-        <p className="label">{caseStudies.length} case studies</p>
+        <p className="label">{stripProjects.length} case studies</p>
         <button
           type="button"
           onClick={() => setPaused((p) => !p)}
