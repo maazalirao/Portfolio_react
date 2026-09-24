@@ -83,7 +83,6 @@ export const site = {
   regions: ['Australia', 'United Kingdom', 'United States', 'Germany'],
   availability: 'Available for work',
   location: 'Multan, Pakistan',
-  city: 'Multan',
   timezone: 'Asia/Karachi',
   timezoneLabel: 'UTC+5',
   email: 'dev.maazali@gmail.com',
@@ -93,7 +92,7 @@ export const site = {
   },
   /**
    * Hero portrait: a transparent cutout, pre-sized as /public/portrait/mobile-<width>.webp and served as-is
-   * (the image optimiser's AVIF smooths away hair and skin texture). Large on phones, a small circle from md.
+   * (the image optimiser's AVIF smooths away hair and skin texture). A small circle beside the intro at every width.
    */
   portrait: {
     src: '/portrait/mobile',

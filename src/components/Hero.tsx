@@ -49,12 +49,13 @@ export function Hero() {
 
           <HeroPortrait className="hero-portrait" />
 
+          {/* The children fade, not the wrapper: on phones the wrapper has no box of its own (see .hero-foot). */}
           <div
-            className="hero-foot fade-in flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between"
+            className="hero-foot flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between"
             style={{ '--d': '650ms' } as Vars}
           >
-            <p className="max-w-md text-lg leading-snug text-muted">{site.intro}</p>
-            <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
+            <p className="hero-intro fade-in max-w-md text-lg leading-snug text-muted">{site.intro}</p>
+            <div className="hero-cta fade-in flex flex-wrap items-center gap-x-8 gap-y-4">
               <Link
                 href="/#work"
                 className="group inline-flex items-center gap-3 rounded-full bg-ink px-6 py-3.5 text-sm font-medium text-paper transition-transform duration-300 hover:scale-[1.03]"

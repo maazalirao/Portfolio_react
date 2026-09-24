@@ -47,7 +47,7 @@ Per-project options:
 
 ### Hero portrait
 
-A transparent cutout in `public/portrait/`, pre-sized as `mobile-<width>.webp` at 480, 720, 960 and 1254px and served as-is, because the image optimiser's AVIF softens hair and skin. Phones show it large on a studio backdrop; from 768px wide it is a small circle beside the intro. Replace all four sizes when you change the photo.
+A transparent cutout in `public/portrait/`, pre-sized as `mobile-<width>.webp` at 480, 720, 960 and 1254px and served as-is, because the image optimiser's AVIF softens hair and skin. It is a small circle beside the intro at every width. Replace all four sizes when you change the photo.
 
 ## Domain and SEO
 
