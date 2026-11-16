@@ -79,7 +79,7 @@ export const site = {
     'Maaz Ali is a full-stack engineer building multi-tenant SaaS for clients in Australia, the UK and the US. React, Next.js, NestJS and AI-powered products, end to end.',
   /** The scroll-lit statement under the hero. */
   statement:
-    'I build software that solves real-life problems. Since 2021 I have shipped products end to end: a multi-tenant platform running aesthetic clinics across Australia, an invite-only fashion network in the UK, and AI assistants that only answer from what each role is cleared to see.',
+    'I build software that solves real-life problems. Since 2021 I have shipped products end to end: a multi-tenant platform running healthcare clinics across Australia, an invite-only fashion network in the UK, and AI assistants that only answer from what each role is cleared to see.',
   regions: ['Australia', 'United Kingdom', 'United States', 'Germany'],
   availability: 'Available for work',
   location: 'Multan, Pakistan',
@@ -103,8 +103,8 @@ export const site = {
 
 export const projects: Project[] = [
   {
-    slug: 'noavant',
-    name: 'Noavant',
+    slug: 'fashion-social-network',
+    name: 'Fashion Social Network',
     tagline: 'Invite-only social network for designers, stylists and photographers in the UK fashion world.',
     category: 'Social platform',
     year: '2025',
@@ -115,7 +115,7 @@ export const projects: Project[] = [
     problem:
       'Fashion creatives needed a private space to build portfolios, collaborate and sell their work, with the premium feel a fashion product demands.',
     overview: [
-      'Noavant is an invite-only social network for the fashion world. Designers, stylists and photographers build portfolios, create drag-and-drop moodboards, start public or private communities, message each other in real time and sell their work.',
+      'An invite-only social network for the fashion world. Designers, stylists and photographers build portfolios, create drag-and-drop moodboards, start public or private communities, message each other in real time and sell their work.',
       'I was the full-stack developer on the project at GoCloud, building it into a fast, polished platform.',
     ],
     features: [
@@ -128,24 +128,15 @@ export const projects: Project[] = [
     ],
     stack: ['Next.js', 'NestJS', 'API development'],
     outcomes: ['Launched to a strong reception in the UK fashion scene, with creatives quickly forming active communities.'],
-    live: 'https://noavant.com',
-    offline: true,
     color: '#a3161a',
-    images: [
-      { src: '/work/noavant/01-landing.webp', alt: 'Noavant landing page: the invite-only fashion social network' },
-      { src: '/work/noavant/02-feed.webp', alt: 'Home feed with community stats and fashion news' },
-      { src: '/work/noavant/03-community.webp', alt: 'Community page with feed, members and privacy settings' },
-      { src: '/work/noavant/04-profile-moodboard.webp', alt: 'Creative profile with portfolio and moodboards' },
-      { src: '/work/noavant/05-explore-communities.webp', alt: 'Explore communities with privacy filters' },
-      { src: '/work/noavant/06-post.webp', alt: 'Post detail in dark mode' },
-    ],
+    images: [{ src: '/work/fashion-social-network/01-landing.webp', alt: 'Landing page: the invite-only fashion social network' }],
     tier: 'featured',
     caseStudy: true,
   },
   {
-    slug: 'aesthetics-consultants',
-    name: 'Aesthetics Consultants',
-    tagline: 'Multi-tenant clinic management SaaS for aesthetic and cosmetic clinics across Australia.',
+    slug: 'telehealth-communications',
+    name: 'Telehealth Communications',
+    tagline: 'Multi-tenant clinic management and patient communications SaaS for healthcare clinics across Australia.',
     category: 'Clinic management SaaS',
     year: '2025',
     period: 'Jul 2025 — Present',
@@ -153,7 +144,7 @@ export const projects: Project[] = [
     region: 'Australia',
     role: 'Senior backend (full-stack) developer',
     problem:
-      'An aesthetic clinic runs on bookings, clinical records, consent, stock, staff and marketing all at once. The platform was built to run an entire practice, across multiple clinics, from one place.',
+      'A clinic runs on bookings, clinical records, consent, stock, staff and patient communications all at once. The platform was built to run an entire practice, across multiple clinics, from one place.',
     overview: [
       'I have worked on the platform with my team since July 2025, with end-to-end ownership of the staff roster, stock reconciliation, SMS automation and treatment modules.',
       'It covers what a clinic needs day to day: scheduling and online booking, patient profiles with clinical records and treatment plans, digital consent forms and prescriptions, inventory, rostering, reporting, gift cards, loyalty and promotions, plus built-in email and SMS marketing and CRM, all with role-based access across clinics.',
@@ -163,23 +154,19 @@ export const projects: Project[] = [
       'Staff rostering across clinics',
       'Inventory, stock control and reconciliation',
       'SMS and email marketing campaigns',
-      'Treatment plans for injectables, skin and beauty',
+      'Treatment plans',
       'Scheduling and online booking',
       'Patient records, digital consent forms and prescriptions',
       'Sales and revenue reporting, gift cards, loyalty and promotions',
       'Role-based access across multiple clinics',
     ],
     stack: ['React', 'NestJS', 'MySQL', 'Multi-tenant architecture', 'Role-based access'],
-    live: 'https://aestheticsconsults.com.au',
-    color: '#0a5aa6',
-    showcaseFrom: 2,
+    color: '#0f766e',
     images: [
-      { src: '/work/aesthetics-consultants/01-staff-roster.webp', alt: 'Staff roster: weekly shift assignments per clinic', zoom: 1.3 },
-      { src: '/work/aesthetics-consultants/06-sign-in.webp', alt: 'Sign-in screen with email and mobile OTP', focus: 'center top' },
-      { src: '/work/aesthetics-consultants/05-app-menu.webp', alt: 'App menu with clinics, patients, roles and promotions', zoom: 1.12 },
-      { src: '/work/aesthetics-consultants/02-stock-ledger.webp', alt: 'Stock management: inventory, pricing and ledger', zoom: 1.3 },
-      { src: '/work/aesthetics-consultants/03-campaigns.webp', alt: 'Campaign tools for email and SMS marketing', zoom: 1.1, focus: 'center top' },
-      { src: '/work/aesthetics-consultants/04-appointments.webp', alt: 'Appointment schedule by injector, week view', zoom: 1.2 },
+      { src: '/work/telehealth-communications/01-schedule.webp', alt: 'Illustrative view: weekly appointment schedule across clinics' },
+      { src: '/work/telehealth-communications/02-patient.webp', alt: 'Illustrative view: patient record with treatment plan and consent' },
+      { src: '/work/telehealth-communications/03-messaging.webp', alt: 'Illustrative view: SMS and email patient messaging' },
+      { src: '/work/telehealth-communications/04-roster.webp', alt: 'Illustrative view: staff roster and stock overview' },
     ],
     tier: 'featured',
     caseStudy: true,
@@ -497,7 +484,7 @@ export const experience: Role[] = [
     end: 'Present',
     location: 'On-site',
     bullets: [
-      'Own the staff roster, stock reconciliation, SMS automation and treatment modules of Aesthetics Consultants, a multi-tenant platform running clinics across Australia.',
+      'Own the staff roster, stock reconciliation, SMS automation and treatment modules of Telehealth Communications, a multi-tenant platform running clinics across Australia.',
       'Build across a React front end and a NestJS and MySQL back end, with role-based access across multiple clinics.',
     ],
   },
@@ -568,7 +555,7 @@ export const indexProjects = projects.filter((p) => p.tier === 'index')
 export const caseStudies = projects.filter((p) => p.caseStudy)
 
 /** The hero strip starts with these case studies, in this order; the rest follow in their usual order. */
-const stripOrder = ['teamly-qa', 'noavant', 'cadquest', 'aesthetics-consultants']
+const stripOrder = ['teamly-qa', 'fashion-social-network', 'cadquest', 'telehealth-communications']
 const stripRank = (project: Project) => (stripOrder.includes(project.slug) ? stripOrder.indexOf(project.slug) : stripOrder.length)
 export const stripProjects = [...caseStudies].sort((a, b) => stripRank(a) - stripRank(b))
 
